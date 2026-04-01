@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Login – NaijaEarn Hub 🇳🇬</title>
+  <link rel="stylesheet" href="style.css" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2233572978077170" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="index.html" class="logo">Naija<span>Earn</span> Hub <span class="flag">🇳🇬</span></a>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle">🌙</button>
+    </div>
+  </div>
+</nav>
+
+<main class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div style="font-size:48px;margin-bottom:8px;">👋</div>
+      <h1>Welcome Back!</h1>
+      <p class="text-muted mt-1">Log in to check your earnings</p>
+    </div>
+
+    <!-- Daily Bonus Notice -->
+    <div style="background:rgba(0,200,83,0.1);border:1px solid rgba(0,200,83,0.3);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:16px;font-size:13px;display:flex;align-items:center;gap:8px;">
+      ☀️ <strong>Daily Bonus:</strong> Log in every day to earn ₦20 automatically!
+    </div>
+
+    <div class="card">
+      <form id="loginForm" novalidate>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" id="email"
+            placeholder="yourname@gmail.com" autocomplete="email" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div style="position:relative;">
+            <input type="password" class="form-input" id="password"
+              placeholder="Enter your password" autocomplete="current-password" required
+              style="padding-right:48px;" />
+            <button type="button" id="togglePwd"
+              style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;font-size:18px;cursor:pointer;">👁️</button>
+          </div>
+        </div>
+
+        <div style="text-align:right;margin-bottom:16px;">
+          <a href="#" style="font-size:13px;" id="forgotLink">Forgot password?</a>
+        </div>
+
+        <div id="formError" style="font-size:13px;color:var(--danger);margin-bottom:12px;padding:10px;background:rgba(255,68,68,0.08);border-radius:8px;display:none;"></div>
+
+        <button type="submit" class="btn btn-primary btn-full btn-lg" id="loginBtn">
+          🔐 Login to My Account
+        </button>
+      </form>
+
+      <div class="divider">or</div>
+
+      <p class="text-center" style="font-size:14px;">
+        New here? <a href="signup.html"><strong>Create free account</strong></a>
+      </p>
+    </div>
+  </div>
+</main>
+
+<!-- Daily Bonus Modal -->
+<div class="modal-overlay" id="bonusModal">
+  <div class="modal">
+    <div class="earn-popup text-center">
+      <div style="font-size:48px;margin-bottom:8px;" class="animate-float">☀️</div>
+      <div class="amount">+₦20</div>
+      <h3 style="margin-top:12px;">Daily Bonus Claimed!</h3>
+      <p class="text-muted mt-1" style="font-size:14px;">
+        Come back tomorrow for another ₦20. Invite friends to earn more!
+      </p>
+      <button class="btn btn-primary btn-full mt-3" onclick="window.location.href='dashboard.html'">
+        Go to Dashboard 🚀
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Forgot Password Modal -->
+<div class="modal-overlay" id="forgotModal">
+  <div class="modal">
+    <h3 style="margin-bottom:12px;">Reset Password</h3>
+    <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;">
+      Enter your registered email. In production, a reset link will be sent.
+    </p>
+    <input type="email" class="form-input" id="resetEmail" placeholder="your@email.com" />
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn btn-ghost" style="flex:1;" onclick="document.getElementById('forgotModal').classList.remove('active')">Cancel</button>
+      <button class="btn btn-primary" style="flex:1;" id="sendResetBtn">Send Reset Link</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+  document.getElementById('togglePwd').onclick = () => {
+    const p = document.getElementById('password');
+    p.type = p.type === 'password' ? 'text' : 'password';
+  };
+
+  document.getElementById('forgotLink').onclick = (e) => {
+    e.preventDefault();
+    document.getElementById('forgotModal').classList.add('active');
+  };
+
+  document.getElementById('sendResetBtn').onclick = () => {
+    const email = document.getElementById('resetEmail').value.trim();
+    if (!email.includes('@')) { alert('Please enter a valid email.'); return; }
+    alert('In production, a reset link would be sent to: ' + email);
+    document.getElementById('forgotModal').classList.remove('active');
+  };
+
+  document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const err = document.getElementById('formError');
+    err.style.display = 'none';
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    if (!email || !password) {
+      err.textContent = 'Please fill in all fields.';
+      err.style.display = 'block';
+      return;
+    }
+
+    const btn = document.getElementById('loginBtn');
+    btn.innerHTML = '<div class="spinner" style="width:22px;height:22px;border-width:2px;margin:0;"></div>';
+    btn.disabled = true;
+
+    await new Promise(r => setTimeout(r, 800));
+
+    const users = JSON.parse(localStorage.getItem('naija_users') || '[]');
+    const user = users.find(u => u.email === email && u.password === btoa(password));
+
+    if (!user) {
+      err.textContent = 'Invalid email or password. Please try again.';
+      err.style.display = 'block';
+      btn.innerHTML = '🔐 Login to My Account';
+      btn.disabled = false;
+      return;
+    }
+
+    // Set session
+    localStorage.setItem('naija_current', JSON.stringify({ id: user.id, email: user.email, name: user.name }));
+
+    // Daily bonus check
+    const lastLogin = user.lastLogin ? new Date(user.lastLogin) : null;
+    const today = new Date();
+    const isNewDay = !lastLogin ||
+      lastLogin.getDate() !== today.getDate() ||
+      lastLogin.getMonth() !== today.getMonth() ||
+      lastLogin.getFullYear() !== today.getFullYear();
+
+    if (isNewDay) {
+      // Award daily bonus
+      const idx = users.findIndex(u => u.id === user.id);
+      users[idx].balance += 20;
+      users[idx].lastLogin = today.toISOString();
+      users[idx].dailyBonus = true;
+      localStorage.setItem('naija_users', JSON.stringify(users));
+      document.getElementById('bonusModal').classList.add('active');
+    } else {
+      window.location.href = 'dashboard.html';
+    }
+  });
+</script>
+</body>
+</html>
