@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Sign Up – NaijaEarn Hub 🇳🇬</title>
+  <link rel="stylesheet" href="style.css" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2233572978077170" crossorigin="anonymous"></script>
+  <style>
+    .auth-page { padding: 80px 16px 40px; }
+    .bonus-tag {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: var(--dark); border-radius: 50px;
+      padding: 4px 14px; font-size: 12px; font-weight: 800;
+      display: inline-block; margin-bottom: 8px;
+    }
+    .ref-notice {
+      background: rgba(0,200,83,0.12);
+      border: 1px solid rgba(0,200,83,0.3);
+      border-radius: var(--radius-sm); padding: 10px 14px;
+      font-size: 13px; margin-bottom: 16px;
+      display: none;
+    }
+    .ref-notice.show { display: flex; align-items: center; gap: 8px; }
+    .strength-bar { height: 4px; border-radius: 2px; background: var(--dark-3); margin-top: 6px; }
+    .strength-fill { height: 100%; border-radius: 2px; transition: all 0.3s; width: 0%; }
+    .terms-check { display: flex; align-items: flex-start; gap: 10px; margin: 16px 0; }
+    .terms-check input[type="checkbox"] {
+      margin-top: 3px; accent-color: var(--green);
+      width: 16px; height: 16px; flex-shrink: 0; cursor: pointer;
+    }
+    .terms-check label { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="index.html" class="logo">Naija<span>Earn</span> Hub <span class="flag">🇳🇬</span></a>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle">🌙</button>
+    </div>
+  </div>
+</nav>
+
+<div class="urgency-banner">
+  🔥 <span id="slotsLeft">87</span> bonus slots left today! Sign up now to claim yours.
+</div>
+
+<main class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="bonus-tag">🎁 FREE ₦200 Signup Bonus</div>
+      <h1>Join NaijaEarn Hub</h1>
+      <p class="text-muted mt-1">Start earning in 60 seconds. No fees ever.</p>
+    </div>
+
+    <!-- Referral notice -->
+    <div class="ref-notice" id="refNotice">
+      🎉 You were invited by <strong id="refBy">a friend</strong>! You'll both earn a bonus.
+    </div>
+
+    <div class="card">
+      <form id="signupForm" novalidate>
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" id="fullName"
+            placeholder="e.g. Chukwuemeka Obi" autocomplete="name" required />
+          <div class="field-error" id="nameError" style="font-size:12px;color:var(--danger);margin-top:4px;"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" id="email"
+            placeholder="yourname@gmail.com" autocomplete="email" required />
+          <div class="field-error" id="emailError" style="font-size:12px;color:var(--danger);margin-top:4px;"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" class="form-input" id="phone"
+            placeholder="+234 800 000 0000" autocomplete="tel" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div style="position:relative;">
+            <input type="password" class="form-input" id="password"
+              placeholder="Create a strong password" autocomplete="new-password" required
+              style="padding-right:48px;" />
+            <button type="button" id="togglePwd" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;font-size:18px;cursor:pointer;">👁️</button>
+          </div>
+          <div class="strength-bar">
+            <div class="strength-fill" id="strengthFill"></div>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;" id="strengthText"></div>
+          <div class="field-error" id="pwdError" style="font-size:12px;color:var(--danger);margin-top:4px;"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Referral Code (Optional)</label>
+          <input type="text" class="form-input" id="refCode"
+            placeholder="Enter referral code" autocomplete="off" />
+        </div>
+
+        <div class="terms-check">
+          <input type="checkbox" id="termsCheck" />
+          <label for="termsCheck">
+            I agree to the <a href="terms.html">Terms of Service</a> and
+            <a href="privacy.html">Privacy Policy</a>. I understand earnings are
+            based on activity and are not guaranteed.
+          </label>
+        </div>
+
+        <div id="formError" style="font-size:13px;color:var(--danger);margin-bottom:12px;display:none;"></div>
+
+        <button type="submit" class="btn btn-primary btn-full btn-lg" id="signupBtn">
+          🚀 Create My Account — FREE
+        </button>
+      </form>
+
+      <div class="divider">or</div>
+
+      <p class="text-center" style="font-size:14px;">
+        Already have an account? <a href="login.html"><strong>Login here</strong></a>
+      </p>
+    </div>
+
+    <div class="disclaimer mt-2" style="font-size:11px;">
+      ⚠️ Earnings are based on activity. Not guaranteed income.
+    </div>
+  </div>
+</main>
+
+<!-- Earned Popup Modal -->
+<div class="modal-overlay" id="earnModal">
+  <div class="modal">
+    <div class="earn-popup text-center">
+      <div class="coins animate-float">🪙</div>
+      <div class="amount">+₦200</div>
+      <h3 style="margin-top:12px;">Welcome Bonus!</h3>
+      <p class="text-muted mt-1" style="font-size:14px;">
+        You've earned ₦200 signup bonus! Start inviting friends to earn more.
+      </p>
+      <a href="dashboard.html" class="btn btn-primary btn-full mt-3" id="goToDash">
+        Go to My Dashboard 🎯
+      </a>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+  // Check for referral code in URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const refParam = urlParams.get('ref');
+  if (refParam) {
+    document.getElementById('refCode').value = refParam;
+    const notice = document.getElementById('refNotice');
+    notice.classList.add('show');
+    document.getElementById('refBy').textContent = refParam;
+  }
+
+  // Password toggle
+  document.getElementById('togglePwd').onclick = () => {
+    const p = document.getElementById('password');
+    p.type = p.type === 'password' ? 'text' : 'password';
+  };
+
+  // Password strength
+  document.getElementById('password').addEventListener('input', function() {
+    const val = this.value;
+    let strength = 0;
+    if (val.length >= 8) strength++;
+    if (/[A-Z]/.test(val)) strength++;
+    if (/[0-9]/.test(val)) strength++;
+    if (/[^A-Za-z0-9]/.test(val)) strength++;
+
+    const fill = document.getElementById('strengthFill');
+    const text = document.getElementById('strengthText');
+    const colors = ['', '#ff4444', '#ff9800', '#ffeb3b', '#00c853'];
+    const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+
+    fill.style.width = (strength * 25) + '%';
+    fill.style.background = colors[strength] || '';
+    text.textContent = strength > 0 ? labels[strength] : '';
+    text.style.color = colors[strength] || '';
+  });
+
+  // Form submit
+  document.getElementById('signupForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    // Clear errors
+    ['nameError','emailError','pwdError'].forEach(id => document.getElementById(id).textContent = '');
+    document.getElementById('formError').style.display = 'none';
+
+    const name = document.getElementById('fullName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const password = document.getElementById('password').value;
+    const refCode = document.getElementById('refCode').value.trim();
+    const terms = document.getElementById('termsCheck').checked;
+
+    // Validation
+    let valid = true;
+    if (name.length < 3) {
+      document.getElementById('nameError').textContent = 'Please enter your full name';
+      valid = false;
+    }
+    if (!email.includes('@') || !email.includes('.')) {
+      document.getElementById('emailError').textContent = 'Please enter a valid email';
+      valid = false;
+    }
+    if (password.length < 6) {
+      document.getElementById('pwdError').textContent = 'Password must be at least 6 characters';
+      valid = false;
+    }
+    if (!terms) {
+      const fe = document.getElementById('formError');
+      fe.textContent = 'Please accept the Terms of Service to continue.';
+      fe.style.display = 'block';
+      valid = false;
+    }
+    if (!valid) return;
+
+    const btn = document.getElementById('signupBtn');
+    btn.innerHTML = '<div class="spinner" style="width:22px;height:22px;border-width:2px;margin:0;"></div>';
+    btn.disabled = true;
+
+    // Check if email exists (localStorage demo)
+    const users = JSON.parse(localStorage.getItem('naija_users') || '[]');
+    if (users.find(u => u.email === email)) {
+      document.getElementById('emailError').textContent = 'This email is already registered. Please login.';
+      btn.innerHTML = '🚀 Create My Account — FREE';
+      btn.disabled = false;
+      return;
+    }
+
+    // Generate referral code
+    const myRefCode = name.split(' ')[0].toLowerCase() + Math.floor(1000 + Math.random() * 9000);
+
+    // Create user
+    const user = {
+      id: Date.now().toString(),
+      name,
+      email,
+      phone,
+      password: btoa(password), // base64 for demo; use bcrypt in production
+      refCode: myRefCode,
+      referredBy: refCode || null,
+      balance: 200, // signup bonus
+      referralCount: 0,
+      dailyBonus: false,
+      lastLogin: new Date().toISOString(),
+      joinedAt: new Date().toISOString(),
+      withdrawals: [],
+      completedTasks: []
+    };
+
+    users.push(user);
+    localStorage.setItem('naija_users', JSON.stringify(users));
+
+    // Credit referrer if valid
+    if (refCode) {
+      const referrer = users.find(u => u.refCode === refCode && u.email !== email);
+      if (referrer) {
+        referrer.balance += 200;
+        referrer.referralCount += 1;
+        localStorage.setItem('naija_users', JSON.stringify(users));
+      }
+    }
+
+    // Set session
+    localStorage.setItem('naija_current', JSON.stringify({ id: user.id, email: user.email, name: user.name }));
+
+    // Simulate network delay
+    await new Promise(r => setTimeout(r, 1200));
+
+    // Show success popup
+    document.getElementById('earnModal').classList.add('active');
+  });
+
+  document.getElementById('goToDash').onclick = () => {
+    window.location.href = 'dashboard.html';
+  };
+</script>
+</body>
+</html>
