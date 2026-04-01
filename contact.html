@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact – NaijaEarn Hub</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="index.html" class="logo">Naija<span>Earn</span> Hub 🇳🇬</a>
+    <div class="nav-actions"><button class="theme-toggle" id="themeToggle">🌙</button></div>
+  </div>
+</nav>
+
+<main style="padding:80px 16px 60px;">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:32px;">
+      <div style="font-size:48px;margin-bottom:12px;">📬</div>
+      <h1 style="font-size:28px;">Contact Us</h1>
+      <p class="text-muted mt-1">We're here to help. Get in touch!</p>
+    </div>
+
+    <div style="display:grid;gap:12px;margin-bottom:32px;">
+      <div class="card" style="display:flex;align-items:center;gap:14px;">
+        <div style="font-size:28px;">📧</div>
+        <div>
+          <div style="font-weight:700;font-size:14px;">Email Support</div>
+          <a href="mailto:support@naijaearnhub.com" style="font-size:13px;color:var(--text-muted);">support@naijaearnhub.com</a>
+          <div style="font-size:12px;color:var(--text-muted);">Response within 24 hours</div>
+        </div>
+      </div>
+      <div class="card" style="display:flex;align-items:center;gap:14px;">
+        <div style="font-size:28px;">💬</div>
+        <div>
+          <div style="font-weight:700;font-size:14px;">WhatsApp Support</div>
+          <a href="https://wa.me/2348000000000" style="font-size:13px;color:var(--text-muted);">+234 800 000 0000</a>
+          <div style="font-size:12px;color:var(--text-muted);">Mon–Fri, 9am–6pm WAT</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 style="font-size:18px;margin-bottom:16px;">Send a Message</h2>
+      <form id="contactForm" novalidate>
+        <div class="form-group">
+          <label class="form-label">Your Name</label>
+          <input type="text" class="form-input" id="cName" placeholder="Chukwuemeka Obi" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" id="cEmail" placeholder="your@email.com" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subject</label>
+          <select class="form-input" id="cSubject">
+            <option>Withdrawal Issue</option>
+            <option>Account Problem</option>
+            <option>Referral Issue</option>
+            <option>Technical Problem</option>
+            <option>Partnership Inquiry</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message</label>
+          <textarea class="form-input" id="cMessage" rows="5" placeholder="Describe your issue or inquiry..." style="resize:vertical;min-height:120px;"></textarea>
+        </div>
+        <div id="contactMsg" style="font-size:13px;margin-bottom:10px;display:none;"></div>
+        <button type="submit" class="btn btn-primary btn-full">📤 Send Message</button>
+      </form>
+    </div>
+
+    <div class="disclaimer mt-3">
+      ⚠️ Earnings are based on activity. Not guaranteed income. Read our <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Service</a>
+  </div>
+  <p>© 2025 NaijaEarn Hub. All rights reserved.</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = document.getElementById('cName').value.trim();
+    const email = document.getElementById('cEmail').value.trim();
+    const message = document.getElementById('cMessage').value.trim();
+    const msg = document.getElementById('contactMsg');
+
+    if (!name || !email || !message) {
+      msg.textContent = '❌ Please fill in all fields.';
+      msg.style.color = 'var(--danger)'; msg.style.display = 'block'; return;
+    }
+
+    // In production, send to your backend API
+    msg.textContent = '✅ Message sent! We\'ll reply to ' + email + ' within 24 hours.';
+    msg.style.color = 'var(--green)'; msg.style.display = 'block';
+    this.reset();
+  });
+</script>
+</body>
+</html>
