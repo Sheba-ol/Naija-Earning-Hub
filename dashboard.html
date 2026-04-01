@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Dashboard – NaijaEarn Hub 🇳🇬</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Google AdSense (load ONCE in <head>) -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2233572978077170" crossorigin="anonymous"></script>
+  <style>
+    body { padding-bottom: 80px; }
+    .dash-header { padding: 74px 16px 16px; }
+    .welcome-text { font-size:14px;color:var(--text-muted); }
+    .user-name { font-family:var(--font-head);font-size:22px;font-weight:800; }
+
+    .dash-tabs { display:flex;gap:0;background:var(--dark-3);border-radius:50px;padding:4px;margin:16px 0; }
+    .dash-tab { flex:1;padding:10px;border-radius:50px;font-size:13px;font-weight:700;text-align:center;cursor:pointer;color:var(--text-muted);transition:var(--transition); }
+    .dash-tab.active { background:var(--dark-2);color:var(--green);box-shadow:0 2px 8px rgba(0,0,0,0.3); }
+    .tab-content { display:none; }
+    .tab-content.active { display:block; }
+
+    .task-completed { opacity:0.5;pointer-events:none; }
+    .task-completed .task-icon { filter:grayscale(1); }
+
+    .ref-progress-card { background:linear-gradient(135deg,rgba(0,200,83,0.12),rgba(255,214,0,0.06));border:1px solid rgba(0,200,83,0.3);border-radius:var(--radius);padding:20px;margin-bottom:16px; }
+    .share-grid { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px; }
+    .lb-you { background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.3); }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <div class="logo">Naija<span>Earn</span> <span class="flag">🇳🇬</span></div>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle">🌙</button>
+      <button class="btn btn-ghost btn-sm" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+</nav>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ===== EARNED MODAL ===== -->
+<div class="modal-overlay" id="earnModal">
+  <div class="modal">
+    <div class="earn-popup text-center">
+      <div style="font-size:48px;" class="animate-float" id="earnIcon">🎉</div>
+      <div class="amount" id="earnAmount">+₦200</div>
+      <h3 style="margin-top:12px;" id="earnTitle">You just earned!</h3>
+      <p class="text-muted mt-1" style="font-size:14px;" id="earnMsg">Keep going to earn more!</p>
+      <button class="btn btn-primary btn-full mt-3" onclick="closeEarnModal()">Continue Earning 🚀</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== WITHDRAWAL MODAL ===== -->
+<div class="modal-overlay" id="withdrawModal">
+  <div class="modal">
+    <h3 style="margin-bottom:6px;">💳 Request Withdrawal</h3>
+    <p class="text-muted" style="font-size:13px;margin-bottom:16px;">Minimum withdrawal: ₦2,000</p>
+    <div id="withdrawError" style="font-size:13px;color:var(--danger);margin-bottom:10px;display:none;"></div>
+    <div class="form-group">
+      <label class="form-label">Bank Name</label>
+      <select class="form-input" id="bankName">
+        <option value="">Select Bank</option>
+        <option>Access Bank</option><option>GTBank</option><option>First Bank</option>
+        <option>Zenith Bank</option><option>UBA</option><option>Fidelity Bank</option>
+        <option>Opay</option><option>Palmpay</option><option>Kuda Bank</option>
+        <option>Stanbic IBTC</option><option>Wema Bank</option><option>Union Bank</option>
+        <option>Polaris Bank</option><option>Sterling Bank</option><option>Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Account Number</label>
+      <input type="text" class="form-input" id="accountNum" placeholder="10-digit account number" maxlength="10" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Account Name</label>
+      <input type="text" class="form-input" id="accountName" placeholder="Name on account" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Amount (₦)</label>
+      <input type="number" class="form-input" id="withdrawAmount" placeholder="Min. ₦2,000" min="2000" />
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px;">
+      <button class="btn btn-ghost" style="flex:1;" onclick="document.getElementById('withdrawModal').classList.remove('active')">Cancel</button>
+      <button class="btn btn-primary" style="flex:1;" id="submitWithdraw">Submit Request</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="container">
+
+  <div class="dash-header" style="padding-left:0;padding-right:0;">
+    <div class="welcome-text">Welcome back 👋</div>
+    <div class="user-name" id="userName">Loading...</div>
+  </div>
+
+  <!-- AD SLOT — Dashboard Top -->
+  <div class="ad-slot">
+    <div class="ad-label">Sponsored Content</div>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-format="autorelaxed"
+         data-ad-client="ca-pub-2233572978077170"
+         data-ad-slot="1744135192"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+
+  <!-- Wallet Card -->
+  <div class="card wallet-card" style="margin-bottom:16px;">
+    <div class="flex-between">
+      <div>
+        <div class="wallet-label">Total Balance</div>
+        <div class="wallet-amount" id="walletBalance">₦0</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:2px;">
+          <span id="refCount">0</span> referrals · <span id="tasksDone">0</span> tasks done
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:28px;">💰</div>
+        <button class="btn btn-gold btn-sm mt-1" onclick="openWithdraw()">Withdraw</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+    <div class="card stat-card" style="padding:16px;">
+      <div style="font-size:20px;margin-bottom:4px;">👥</div>
+      <div class="stat-value" id="statRefs">0</div>
+      <div class="stat-label">Referrals</div>
+    </div>
+    <div class="card stat-card" style="padding:16px;">
+      <div style="font-size:20px;margin-bottom:4px;">✅</div>
+      <div class="stat-value" id="statTasks">0</div>
+      <div class="stat-label">Tasks Done</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="dash-tabs">
+    <div class="dash-tab active" data-tab="earn">Earn</div>
+    <div class="dash-tab" data-tab="referral">Referral</div>
+    <div class="dash-tab" data-tab="leaders">Top Earners</div>
+    <div class="dash-tab" data-tab="history">History</div>
+  </div>
+
+  <!-- ===== TAB: EARN ===== -->
+  <div class="tab-content active" id="tab-earn">
+    <div class="card" style="margin-bottom:16px;" id="dailyBonusCard">
+      <div class="flex-between">
+        <div>
+          <div style="font-weight:700;font-size:15px;">☀️ Daily Login Bonus</div>
+          <div style="font-size:13px;color:var(--text-muted);">Log in every day to earn ₦20</div>
+        </div>
+        <div>
+          <div style="font-family:var(--font-head);font-size:20px;font-weight:800;color:var(--green);">₦20</div>
+          <button class="btn btn-primary btn-sm mt-1" id="claimBonusBtn">Claim</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-title">🎯 Tasks</div>
+      <div class="section-subtitle">Complete tasks to earn Naira</div>
+    </div>
+    <div id="tasksList"></div>
+
+    <!-- AD SLOT — Between Tasks -->
+    <div class="ad-slot">
+      <div class="ad-label">Sponsored Content</div>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-2233572978077170"
+           data-ad-slot="5380127872"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <div class="disclaimer mt-2">⚠️ Earnings are based on activity. Results are not guaranteed.</div>
+  </div>
+
+  <!-- ===== TAB: REFERRAL ===== -->
+  <div class="tab-content" id="tab-referral">
+    <div class="ref-progress-card">
+      <div class="flex-between mb-1">
+        <div style="font-weight:700;">Referral Progress</div>
+        <div style="font-size:13px;color:var(--text-muted);"><span id="refCountProgress">0</span>/5 friends</div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="refProgressFill" style="width:0%;"></div></div>
+      <p style="font-size:13px;color:var(--text-muted);margin-top:8px;">🔓 Invite 5 friends to unlock higher earning rates!</p>
+    </div>
+
+    <div class="card" style="margin-bottom:16px;">
+      <div style="font-weight:700;font-size:15px;margin-bottom:8px;">🔗 Your Referral Link</div>
+      <div class="referral-box">
+        <div class="referral-link-text" id="refLinkText">Loading...</div>
+        <button class="btn btn-primary btn-sm" id="copyRefBtn">Copy</button>
+      </div>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">
+        Earn <strong style="color:var(--green);">₦200</strong> for every friend who signs up with your link!
+      </p>
+    </div>
+
+    <div class="section-header"><div class="section-title">📤 Share Your Link</div></div>
+    <div class="share-grid">
+      <button class="share-btn-whatsapp btn" id="shareWhatsapp">💬 WhatsApp</button>
+      <button class="share-btn-facebook btn" id="shareFacebook">👍 Facebook</button>
+    </div>
+    <div style="margin-top:12px;">
+      <button class="btn btn-outline btn-full" id="shareGeneric">📋 Share via Other Apps</button>
+    </div>
+
+    <div class="card" style="margin-top:16px;background:linear-gradient(135deg,rgba(0,200,83,0.06),rgba(255,214,0,0.04));">
+      <div style="font-size:13px;margin-bottom:8px;font-weight:700;">💡 Referral Tips</div>
+      <ul style="font-size:13px;color:var(--text-muted);padding-left:20px;line-height:1.8;">
+        <li>Post your link on your WhatsApp Status</li>
+        <li>Share in group chats and forums</li>
+        <li>Tell family and friends in your area</li>
+        <li>Post in Facebook groups about making money online</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== TAB: LEADERBOARD ===== -->
+  <div class="tab-content" id="tab-leaders">
+    <div class="section-header">
+      <div class="section-title">🏆 Top Earners</div>
+      <div class="section-subtitle">Weekly leaderboard — win bonus cash!</div>
+    </div>
+    <div style="background:rgba(255,214,0,0.08);border:1px solid rgba(255,214,0,0.3);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;margin-bottom:16px;">
+      🥇 Top 3 earners this week win a <strong style="color:var(--gold);">₦1,000 bonus!</strong>
+    </div>
+    <div id="leaderboardList"></div>
+  </div>
+
+  <!-- ===== TAB: HISTORY ===== -->
+  <div class="tab-content" id="tab-history">
+    <div class="section-header"><div class="section-title">📋 Transaction History</div></div>
+    <div id="historyList"></div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- AD SLOT — Dashboard Bottom -->
+<div class="container" style="margin-top:8px;">
+  <div class="ad-slot">
+    <div class="ad-label">Sponsored Content</div>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-2233572978077170"
+         data-ad-slot="9648547503"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+</div>
+
+<!-- ===== BOTTOM NAV ===== -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-item active" data-tab="earn"><div class="nav-icon">🎯</div>Earn</div>
+  <div class="bottom-nav-item" data-tab="referral"><div class="nav-icon">🔗</div>Refer</div>
+  <div class="bottom-nav-item" data-tab="leaders"><div class="nav-icon">🏆</div>Leaders</div>
+  <div class="bottom-nav-item" data-tab="history"><div class="nav-icon">📋</div>History</div>
+</nav>
+
+<script src="script.js"></script>
+<script>
+  const session = JSON.parse(localStorage.getItem('naija_current') || 'null');
+  if (!session) window.location.href = 'login.html';
+
+  let users = JSON.parse(localStorage.getItem('naija_users') || '[]');
+  let user = users.find(u => u.id === session.id);
+  if (!user) { localStorage.removeItem('naija_current'); window.location.href = 'login.html'; }
+
+  function saveUsers() { localStorage.setItem('naija_users', JSON.stringify(users)); }
+  function getUser() { return users.find(u => u.id === session.id); }
+
+  function showToast(msg, icon = '🎉') {
+    const tc = document.getElementById('toastContainer');
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.innerHTML = `<span style="font-size:20px;">${icon}</span><span>${msg}</span>`;
+    tc.appendChild(t);
+    setTimeout(() => t.remove(), 4000);
+  }
+
+  function showEarnModal(amount, title, msg, icon = '🎉') {
+    document.getElementById('earnAmount').textContent = '+₦' + amount;
+    document.getElementById('earnTitle').textContent = title;
+    document.getElementById('earnMsg').textContent = msg;
+    document.getElementById('earnIcon').textContent = icon;
+    document.getElementById('earnModal').classList.add('active');
+  }
+
+  function closeEarnModal() {
+    document.getElementById('earnModal').classList.remove('active');
+    refreshUI();
+  }
+
+  function animateBalance(target) {
+    const el = document.getElementById('walletBalance');
+    const start = parseInt(el.textContent.replace(/[^0-9]/g, '')) || 0;
+    const diff = target - start;
+    const steps = 30; let step = 0;
+    const interval = setInterval(() => {
+      step++;
+      el.textContent = '₦' + Math.round(start + (diff * (step / steps))).toLocaleString();
+      if (step >= steps) clearInterval(interval);
+    }, 20);
+  }
+
+  function refreshUI() {
+    user = getUser();
+    document.getElementById('userName').textContent = user.name.split(' ')[0] + ' 👋';
+    document.getElementById('refCount').textContent = user.referralCount || 0;
+    document.getElementById('tasksDone').textContent = (user.completedTasks || []).length;
+    document.getElementById('statRefs').textContent = user.referralCount || 0;
+    document.getElementById('statTasks').textContent = (user.completedTasks || []).length;
+    animateBalance(user.balance);
+
+    const base = window.location.origin + window.location.pathname.replace('dashboard.html', '');
+    document.getElementById('refLinkText').textContent = base + 'signup.html?ref=' + user.refCode;
+
+    const refs = Math.min(user.referralCount || 0, 5);
+    document.getElementById('refCountProgress').textContent = refs;
+    document.getElementById('refProgressFill').style.width = (refs / 5 * 100) + '%';
+
+    const today = new Date();
+    const lastLogin = user.lastLogin ? new Date(user.lastLogin) : null;
+    const sameDay = lastLogin && lastLogin.getDate() === today.getDate() &&
+      lastLogin.getMonth() === today.getMonth() && lastLogin.getFullYear() === today.getFullYear();
+
+    const claimBtn = document.getElementById('claimBonusBtn');
+    if (user.dailyBonus && sameDay) {
+      claimBtn.textContent = '✅ Claimed'; claimBtn.disabled = true;
+      claimBtn.classList.remove('btn-primary'); claimBtn.classList.add('btn-ghost');
+    }
+    renderTasks(); renderLeaderboard(); renderHistory();
+  }
+
+  const TASKS = [
+    { id:'task_view1', icon:'📺', title:'Watch Sponsored Video #1', desc:'Watch a 30-second sponsored video', reward:50, duration:30 },
+    { id:'task_view2', icon:'📢', title:'View Sponsored Content #2', desc:'Browse sponsored product page', reward:50, duration:15 },
+    { id:'task_view3', icon:'🛍️', title:'View Sponsored Offer #3', desc:"See today's featured offer", reward:50, duration:20 },
+    { id:'task_view4', icon:'📰', title:'Read Sponsored Article', desc:'Read a short sponsored article', reward:50, duration:25 },
+  ];
+
+  function renderTasks() {
+    const list = document.getElementById('tasksList');
+    const done = user.completedTasks || [];
+    list.innerHTML = '';
+    TASKS.forEach(task => {
+      const completed = done.includes(task.id);
+      const div = document.createElement('div');
+      div.className = 'task-card' + (completed ? ' task-completed' : '');
+      div.innerHTML = `
+        <div class="task-icon" style="background:${completed ? 'var(--dark-4)' : 'rgba(0,200,83,0.12)'};">
+          ${completed ? '✅' : task.icon}
+        </div>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:14px;">${task.title}</div>
+          <div style="font-size:12px;color:var(--text-muted);">${task.desc}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <div class="task-reward">₦${task.reward}</div>
+          ${completed
+            ? '<div style="font-size:11px;color:var(--text-muted);">Done</div>'
+            : `<button class="btn btn-primary btn-sm mt-1" onclick="startTask('${task.id}',${task.reward},${task.duration},'${task.title}')">Start</button>`}
+        </div>`;
+      list.appendChild(div);
+    });
+  }
+
+  let taskTimers = {};
+  function startTask(taskId, reward, duration, title) {
+    if (taskTimers[taskId] || (user.completedTasks || []).includes(taskId)) return;
+    showToast('Viewing sponsored content... Please wait', '📺');
+    let remaining = duration;
+    taskTimers[taskId] = setInterval(() => {
+      remaining--;
+      if (remaining <= 0) { clearInterval(taskTimers[taskId]); delete taskTimers[taskId]; completeTask(taskId, reward, title); }
+    }, 1000);
+  }
+
+  function completeTask(taskId, reward, title) {
+    const idx = users.findIndex(u => u.id === session.id);
+    if (!users[idx].completedTasks) users[idx].completedTasks = [];
+    if (users[idx].completedTasks.includes(taskId)) return;
+    users[idx].completedTasks.push(taskId);
+    users[idx].balance += reward;
+    if (!users[idx].history) users[idx].history = [];
+    users[idx].history.unshift({ type:'task', desc:title, amount:reward, date:new Date().toISOString() });
+    saveUsers();
+    showEarnModal(reward, 'Task Complete! 🎯', 'Keep completing tasks to earn more Naira!', '📺');
+  }
+
+  document.getElementById('claimBonusBtn').addEventListener('click', () => {
+    const idx = users.findIndex(u => u.id === session.id);
+    if (users[idx].dailyBonus) { showToast('Already claimed today!', '⚠️'); return; }
+    users[idx].balance += 20; users[idx].dailyBonus = true; users[idx].lastLogin = new Date().toISOString();
+    if (!users[idx].history) users[idx].history = [];
+    users[idx].history.unshift({ type:'bonus', desc:'Daily Login Bonus', amount:20, date:new Date().toISOString() });
+    saveUsers();
+    showEarnModal(20, 'Daily Bonus! ☀️', 'Come back tomorrow for another ₦20!', '☀️');
+  });
+
+  const FAKE_LEADERS = [
+    { name:'Chisom A.', refs:42, balance:9840, city:'Lagos' },
+    { name:'Emmanuel O.', refs:38, balance:8800, city:'Abuja' },
+    { name:'Fatimah B.', refs:31, balance:7350, city:'Kano' },
+    { name:'Tunde S.', refs:27, balance:6250, city:'Ibadan' },
+    { name:'Ngozi I.', refs:22, balance:5140, city:'Enugu' },
+    { name:'Seun K.', refs:18, balance:4320, city:'Port Harcourt' },
+    { name:'Blessing M.', refs:15, balance:3650, city:'Benin City' },
+    { name:'Emeka C.', refs:11, balance:2870, city:'Owerri' },
+    { name:'Aisha H.', refs:9, balance:2250, city:'Kaduna' },
+    { name:'Uche N.', refs:7, balance:1740, city:'Jos' },
+  ];
+
+  function renderLeaderboard() {
+    const allLeaders = [...FAKE_LEADERS, { name:user.name.split(' ')[0]+' (You)', refs:user.referralCount||0, balance:user.balance, city:'Your City', isYou:true }];
+    allLeaders.sort((a,b) => b.balance - a.balance);
+    document.getElementById('leaderboardList').innerHTML = allLeaders.slice(0,10).map((leader,i) => {
+      const rc = i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other';
+      const ri = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+      return `<div class="leaderboard-item ${leader.isYou?'lb-you':''}">
+        <div class="leaderboard-rank ${rc}">${ri}</div>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:14px;">${leader.name}${leader.isYou?' 🌟':''}</div>
+          <div style="font-size:12px;color:var(--text-muted);">📍 ${leader.city} · ${leader.refs} referrals</div>
+        </div>
+        <div style="font-family:var(--font-head);font-weight:800;color:var(--green);">₦${leader.balance.toLocaleString()}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function renderHistory() {
+    const history = user.history || [];
+    const list = document.getElementById('historyList');
+    if (!history.length) {
+      list.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:32px;font-size:14px;">No transactions yet. Complete tasks and invite friends to start earning!</div>';
+      return;
+    }
+    list.innerHTML = history.map(h => `
+      <div style="display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--border);">
+        <div style="width:36px;height:36px;border-radius:10px;background:rgba(0,200,83,0.1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">
+          ${h.type==='referral'?'👥':h.type==='task'?'📺':h.type==='bonus'?'☀️':h.type==='withdrawal'?'💳':'💰'}
+        </div>
+        <div style="flex:1;">
+          <div style="font-weight:600;font-size:14px;">${h.desc}</div>
+          <div style="font-size:12px;color:var(--text-muted);">${new Date(h.date).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'})}</div>
+        </div>
+        <div style="font-family:var(--font-head);font-weight:800;color:${h.amount>0?'var(--green)':'var(--danger)'};">
+          ${h.amount>0?'+':''}₦${Math.abs(h.amount).toLocaleString()}
+        </div>
+      </div>`).join('');
+  }
+
+  // Referral share
+  function getRefLink() {
+    return window.location.origin + window.location.pathname.replace('dashboard.html','') + 'signup.html?ref=' + user.refCode;
+  }
+  document.getElementById('copyRefBtn').addEventListener('click', () => {
+    const link = getRefLink();
+    navigator.clipboard.writeText(link).then(() => showToast('Referral link copied!','📋')).catch(() => {
+      const ta = document.createElement('textarea'); ta.value = link;
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+      showToast('Link copied!','📋');
+    });
+  });
+  document.getElementById('shareWhatsapp').addEventListener('click', () => {
+    const msg = `💰 I'm earning real cash on NaijaEarn Hub! Join me and get ₦200 signup bonus!\n\n🔗 ${getRefLink()}\n\n#NaijaEarnHub #EarnOnline #Nigeria`;
+    window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+  });
+  document.getElementById('shareFacebook').addEventListener('click', () => {
+    window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(getRefLink()),'_blank');
+  });
+  document.getElementById('shareGeneric').addEventListener('click', () => {
+    const link = getRefLink();
+    if (navigator.share) { navigator.share({title:'NaijaEarn Hub',text:'Join me and earn ₦200 signup bonus!',url:link}); }
+    else { navigator.clipboard.writeText(link).then(() => showToast('Link copied!','📋')); }
+  });
+
+  // Withdrawal
+  function openWithdraw() {
+    if (user.balance < 2000) { showToast('Minimum withdrawal is ₦2,000. Keep earning!','⚠️'); return; }
+    document.getElementById('withdrawModal').classList.add('active');
+  }
+  document.getElementById('submitWithdraw').addEventListener('click', () => {
+    const errEl = document.getElementById('withdrawError');
+    errEl.style.display = 'none';
+    const bank = document.getElementById('bankName').value;
+    const acctNum = document.getElementById('accountNum').value.trim();
+    const acctName = document.getElementById('accountName').value.trim();
+    const amount = parseInt(document.getElementById('withdrawAmount').value);
+    if (!bank||!acctNum||!acctName||!amount) { errEl.textContent='Please fill in all fields.';errEl.style.display='block';return; }
+    if (acctNum.length!==10) { errEl.textContent='Account number must be 10 digits.';errEl.style.display='block';return; }
+    if (amount<2000) { errEl.textContent='Minimum withdrawal is ₦2,000.';errEl.style.display='block';return; }
+    if (amount>user.balance) { errEl.textContent='Amount exceeds your balance.';errEl.style.display='block';return; }
+
+    const idx = users.findIndex(u => u.id === session.id);
+    users[idx].balance -= amount;
+    if (!users[idx].withdrawals) users[idx].withdrawals = [];
+    users[idx].withdrawals.push({ id:Date.now().toString(), bank, accountNumber:acctNum, accountName:acctName, amount, status:'pending', requestedAt:new Date().toISOString() });
+    if (!users[idx].history) users[idx].history = [];
+    users[idx].history.unshift({ type:'withdrawal', desc:`Withdrawal to ${bank}`, amount:-amount, date:new Date().toISOString() });
+    saveUsers();
+    document.getElementById('withdrawModal').classList.remove('active');
+    showToast('Withdrawal request submitted! Processing in 24-48 hrs.','💳');
+    refreshUI();
+  });
+
+  // Tabs
+  document.querySelectorAll('.dash-tab, .bottom-nav-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const tab = el.dataset.tab;
+      document.querySelectorAll('.dash-tab').forEach(t => t.classList.toggle('active', t.dataset.tab===tab));
+      document.querySelectorAll('.bottom-nav-item').forEach(t => t.classList.toggle('active', t.dataset.tab===tab));
+      document.querySelectorAll('.tab-content').forEach(tc => tc.classList.toggle('active', tc.id==='tab-'+tab));
+    });
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('naija_current');
+    window.location.href = 'login.html';
+  });
+
+  refreshUI();
+
+  const fakeNames = ['Chidi','Amaka','Tunde','Ngozi','Emeka','Fatima','Seun','Blessing','Uche','Aisha'];
+  setInterval(() => {
+    const name = fakeNames[Math.floor(Math.random()*fakeNames.length)];
+    const amt = [50,200][Math.floor(Math.random()*2)];
+    showToast(`${name} just earned ₦${amt}! 🎉`,'💸');
+  }, 12000);
+</script>
+</body>
+</html>
