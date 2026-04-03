@@ -1,544 +1,347 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>Dashboard – NaijaEarn Hub 🇳🇬</title>
-  <link rel="stylesheet" href="style.css" />
-  <!-- Google AdSense (load ONCE in <head>) -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2233572978077170" crossorigin="anonymous"></script>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard – NaijaEarn</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
-    body { padding-bottom: 80px; }
-    .dash-header { padding: 74px 16px 16px; }
-    .welcome-text { font-size:14px;color:var(--text-muted); }
-    .user-name { font-family:var(--font-head);font-size:22px;font-weight:800; }
-
-    .dash-tabs { display:flex;gap:0;background:var(--dark-3);border-radius:50px;padding:4px;margin:16px 0; }
-    .dash-tab { flex:1;padding:10px;border-radius:50px;font-size:13px;font-weight:700;text-align:center;cursor:pointer;color:var(--text-muted);transition:var(--transition); }
-    .dash-tab.active { background:var(--dark-2);color:var(--green);box-shadow:0 2px 8px rgba(0,0,0,0.3); }
-    .tab-content { display:none; }
-    .tab-content.active { display:block; }
-
-    .task-completed { opacity:0.5;pointer-events:none; }
-    .task-completed .task-icon { filter:grayscale(1); }
-
-    .ref-progress-card { background:linear-gradient(135deg,rgba(0,200,83,0.12),rgba(255,214,0,0.06));border:1px solid rgba(0,200,83,0.3);border-radius:var(--radius);padding:20px;margin-bottom:16px; }
-    .share-grid { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px; }
-    .lb-you { background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.3); }
+    :root { --green:#00c853; --gold:#ffca28; --dark:#0a0a0a; --card:#141414; --border:#222; --text:#f0f0f0; --muted:#888; --red:#ff5252; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:var(--dark); color:var(--text); font-family:'DM Sans',sans-serif; }
+    /* NAV */
+    nav { display:flex; justify-content:space-between; align-items:center; padding:1rem 1.5rem; border-bottom:1px solid var(--border); position:sticky; top:0; background:rgba(10,10,10,0.96); backdrop-filter:blur(10px); z-index:100; }
+    .logo { font-family:'Syne',sans-serif; font-weight:800; font-size:1.3rem; text-decoration:none; color:var(--text); }
+    .logo span { color:var(--green); }
+    .nav-right { display:flex; align-items:center; gap:1rem; }
+    .user-badge { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:.4rem .9rem; font-size:.85rem; }
+    .btn-logout { background:transparent; border:1px solid var(--border); color:var(--muted); padding:.4rem .9rem; border-radius:8px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:.82rem; transition:all .2s; }
+    .btn-logout:hover { border-color:var(--red); color:var(--red); }
+    /* LAYOUT */
+    .wrapper { max-width:900px; margin:0 auto; padding:2rem 1.2rem; }
+    /* GREETING */
+    .greeting { margin-bottom:2rem; }
+    .greeting h1 { font-family:'Syne',sans-serif; font-size:1.7rem; font-weight:800; }
+    .greeting p { color:var(--muted); font-size:.9rem; margin-top:.3rem; }
+    /* STAT CARDS */
+    .stats { display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:1rem; margin-bottom:2rem; }
+    .stat-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.4rem 1.2rem; }
+    .stat-card .label { font-size:.78rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:.5rem; }
+    .stat-card .value { font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; }
+    .stat-card.green .value { color:var(--green); }
+    .stat-card.gold .value { color:var(--gold); }
+    /* REFERRAL BOX */
+    .referral-box { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:1.5rem; margin-bottom:2rem; }
+    .referral-box h3 { font-family:'Syne',sans-serif; font-size:1.1rem; margin-bottom:1rem; }
+    .link-row { display:flex; gap:.6rem; }
+    .link-input { flex:1; background:#1a1a1a; border:1px solid var(--border); border-radius:8px; padding:.7rem 1rem; color:var(--text); font-size:.85rem; outline:none; }
+    .copy-btn { background:var(--green); color:#000; border:none; border-radius:8px; padding:.7rem 1.2rem; font-weight:700; cursor:pointer; font-family:'Syne',sans-serif; font-size:.85rem; transition:background .2s; white-space:nowrap; }
+    .copy-btn:hover { background:#00e060; }
+    .share-row { display:flex; gap:.6rem; flex-wrap:wrap; margin-top:.8rem; }
+    .share-btn { flex:1; min-width:100px; padding:.55rem .8rem; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--text); font-size:.82rem; cursor:pointer; transition:all .2s; font-family:'DM Sans',sans-serif; }
+    .share-btn:hover { border-color:var(--green); color:var(--green); }
+    /* WITHDRAW */
+    .withdraw-box { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:1.5rem; margin-bottom:2rem; }
+    .withdraw-box h3 { font-family:'Syne',sans-serif; font-size:1.1rem; margin-bottom:1rem; }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:.8rem; }
+    label { display:block; font-size:.82rem; color:var(--muted); margin-bottom:.35rem; }
+    input, select { width:100%; background:#1a1a1a; border:1px solid var(--border); border-radius:8px; padding:.7rem 1rem; color:var(--text); font-family:'DM Sans',sans-serif; font-size:.9rem; outline:none; transition:border-color .2s; }
+    input:focus, select:focus { border-color:var(--green); }
+    select option { background:#1a1a1a; }
+    .btn-withdraw { width:100%; margin-top:1rem; padding:.85rem; background:var(--gold); color:#000; font-family:'Syne',sans-serif; font-weight:700; font-size:.95rem; border:none; border-radius:10px; cursor:pointer; transition:all .2s; }
+    .btn-withdraw:hover { background:#ffd740; transform:translateY(-1px); }
+    .btn-withdraw:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+    .min-note { font-size:.78rem; color:var(--muted); margin-top:.5rem; }
+    /* TRANSACTIONS */
+    .tx-box { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:1.5rem; }
+    .tx-box h3 { font-family:'Syne',sans-serif; font-size:1.1rem; margin-bottom:1rem; }
+    .tx-item { display:flex; justify-content:space-between; align-items:center; padding:.85rem 0; border-bottom:1px solid var(--border); }
+    .tx-item:last-child { border-bottom:none; }
+    .tx-desc { font-size:.88rem; }
+    .tx-date { font-size:.75rem; color:var(--muted); margin-top:.2rem; }
+    .tx-amount { font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; }
+    .tx-amount.credit { color:var(--green); }
+    .tx-amount.debit { color:var(--red); }
+    .tx-amount.pending { color:var(--gold); }
+    .empty { text-align:center; color:var(--muted); padding:2rem; font-size:.9rem; }
+    /* ALERT */
+    .alert { padding:.75rem 1rem; border-radius:8px; font-size:.85rem; margin-bottom:1rem; display:none; }
+    .alert.success { background:rgba(0,200,83,0.15); color:var(--green); border:1px solid rgba(0,200,83,0.3); }
+    .alert.error { background:rgba(255,82,82,0.12); color:var(--red); border:1px solid rgba(255,82,82,0.25); }
+    .loader { text-align:center; color:var(--muted); padding:3rem; }
   </style>
 </head>
 <body>
 
-<!-- ===== NAVBAR ===== -->
-<nav class="navbar">
-  <div class="navbar-inner">
-    <div class="logo">Naija<span>Earn</span> <span class="flag">🇳🇬</span></div>
-    <div class="nav-actions">
-      <button class="theme-toggle" id="themeToggle">🌙</button>
-      <button class="btn btn-ghost btn-sm" id="logoutBtn">Logout</button>
-    </div>
+<nav>
+  <a class="logo" href="index.html">Naija<span>Earn</span></a>
+  <div class="nav-right">
+    <div class="user-badge" id="userBadge">Loading…</div>
+    <button class="btn-logout" onclick="logout()">Log Out</button>
   </div>
 </nav>
 
-<div class="toast-container" id="toastContainer"></div>
+<div class="wrapper" id="mainContent" style="display:none">
 
-<!-- ===== EARNED MODAL ===== -->
-<div class="modal-overlay" id="earnModal">
-  <div class="modal">
-    <div class="earn-popup text-center">
-      <div style="font-size:48px;" class="animate-float" id="earnIcon">🎉</div>
-      <div class="amount" id="earnAmount">+₦200</div>
-      <h3 style="margin-top:12px;" id="earnTitle">You just earned!</h3>
-      <p class="text-muted mt-1" style="font-size:14px;" id="earnMsg">Keep going to earn more!</p>
-      <button class="btn btn-primary btn-full mt-3" onclick="closeEarnModal()">Continue Earning 🚀</button>
-    </div>
-  </div>
-</div>
-
-<!-- ===== WITHDRAWAL MODAL ===== -->
-<div class="modal-overlay" id="withdrawModal">
-  <div class="modal">
-    <h3 style="margin-bottom:6px;">💳 Request Withdrawal</h3>
-    <p class="text-muted" style="font-size:13px;margin-bottom:16px;">Minimum withdrawal: ₦2,000</p>
-    <div id="withdrawError" style="font-size:13px;color:var(--danger);margin-bottom:10px;display:none;"></div>
-    <div class="form-group">
-      <label class="form-label">Bank Name</label>
-      <select class="form-input" id="bankName">
-        <option value="">Select Bank</option>
-        <option>Access Bank</option><option>GTBank</option><option>First Bank</option>
-        <option>Zenith Bank</option><option>UBA</option><option>Fidelity Bank</option>
-        <option>Opay</option><option>Palmpay</option><option>Kuda Bank</option>
-        <option>Stanbic IBTC</option><option>Wema Bank</option><option>Union Bank</option>
-        <option>Polaris Bank</option><option>Sterling Bank</option><option>Other</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Account Number</label>
-      <input type="text" class="form-input" id="accountNum" placeholder="10-digit account number" maxlength="10" />
-    </div>
-    <div class="form-group">
-      <label class="form-label">Account Name</label>
-      <input type="text" class="form-input" id="accountName" placeholder="Name on account" />
-    </div>
-    <div class="form-group">
-      <label class="form-label">Amount (₦)</label>
-      <input type="number" class="form-input" id="withdrawAmount" placeholder="Min. ₦2,000" min="2000" />
-    </div>
-    <div style="display:flex;gap:10px;margin-top:4px;">
-      <button class="btn btn-ghost" style="flex:1;" onclick="document.getElementById('withdrawModal').classList.remove('active')">Cancel</button>
-      <button class="btn btn-primary" style="flex:1;" id="submitWithdraw">Submit Request</button>
-    </div>
-  </div>
-</div>
-
-<!-- ===== MAIN CONTENT ===== -->
-<div class="container">
-
-  <div class="dash-header" style="padding-left:0;padding-right:0;">
-    <div class="welcome-text">Welcome back 👋</div>
-    <div class="user-name" id="userName">Loading...</div>
+  <div class="greeting">
+    <h1>Welcome back, <span id="firstName">—</span> 👋</h1>
+    <p id="greetSub">Here's your earning summary</p>
   </div>
 
-  <!-- AD SLOT — Dashboard Top -->
-  <div class="ad-slot">
-    <div class="ad-label">Sponsored Content</div>
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-format="autorelaxed"
-         data-ad-client="ca-pub-2233572978077170"
-         data-ad-slot="1744135192"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-card green">
+      <div class="label">Available Balance</div>
+      <div class="value" id="balance">₦0</div>
+    </div>
+    <div class="stat-card gold">
+      <div class="label">Total Earned</div>
+      <div class="value" id="totalEarned">₦0</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Referrals</div>
+      <div class="value" id="refCount">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Pending</div>
+      <div class="value" id="pending">₦0</div>
+    </div>
   </div>
 
-  <!-- Wallet Card -->
-  <div class="card wallet-card" style="margin-bottom:16px;">
-    <div class="flex-between">
+  <!-- REFERRAL -->
+  <div class="referral-box">
+    <h3>🔗 Your Referral Link</h3>
+    <div class="link-row">
+      <input class="link-input" type="text" id="refLink" readonly/>
+      <button class="copy-btn" onclick="copyLink()">Copy</button>
+    </div>
+    <div class="share-row">
+      <button class="share-btn" onclick="shareWhatsApp()">📱 WhatsApp</button>
+      <button class="share-btn" onclick="shareTelegram()">✈️ Telegram</button>
+      <button class="share-btn" onclick="shareFacebook()">📘 Facebook</button>
+      <button class="share-btn" onclick="shareTwitter()">🐦 Twitter</button>
+    </div>
+    <p style="margin-top:.8rem;font-size:.78rem;color:var(--muted)">Earn <strong style="color:var(--green)">₦200</strong> for every person who registers with your link</p>
+  </div>
+
+  <!-- WITHDRAW -->
+  <div class="withdraw-box">
+    <h3>💳 Request Withdrawal</h3>
+    <div class="alert" id="wAlert"></div>
+    <div class="form-row">
       <div>
-        <div class="wallet-label">Total Balance</div>
-        <div class="wallet-amount" id="walletBalance">₦0</div>
-        <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:2px;">
-          <span id="refCount">0</span> referrals · <span id="tasksDone">0</span> tasks done
-        </div>
+        <label>Bank Name</label>
+        <select id="bankName">
+          <option value="">Select Bank</option>
+          <option>Access Bank</option>
+          <option>GTBank</option>
+          <option>First Bank</option>
+          <option>Zenith Bank</option>
+          <option>UBA</option>
+          <option>Opay</option>
+          <option>Palmpay</option>
+          <option>Kuda Bank</option>
+          <option>FCMB</option>
+          <option>Fidelity Bank</option>
+          <option>Wema Bank</option>
+          <option>Sterling Bank</option>
+        </select>
       </div>
-      <div style="text-align:right;">
-        <div style="font-size:28px;">💰</div>
-        <button class="btn btn-gold btn-sm mt-1" onclick="openWithdraw()">Withdraw</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Stats -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
-    <div class="card stat-card" style="padding:16px;">
-      <div style="font-size:20px;margin-bottom:4px;">👥</div>
-      <div class="stat-value" id="statRefs">0</div>
-      <div class="stat-label">Referrals</div>
-    </div>
-    <div class="card stat-card" style="padding:16px;">
-      <div style="font-size:20px;margin-bottom:4px;">✅</div>
-      <div class="stat-value" id="statTasks">0</div>
-      <div class="stat-label">Tasks Done</div>
-    </div>
-  </div>
-
-  <!-- TABS -->
-  <div class="dash-tabs">
-    <div class="dash-tab active" data-tab="earn">Earn</div>
-    <div class="dash-tab" data-tab="referral">Referral</div>
-    <div class="dash-tab" data-tab="leaders">Top Earners</div>
-    <div class="dash-tab" data-tab="history">History</div>
-  </div>
-
-  <!-- ===== TAB: EARN ===== -->
-  <div class="tab-content active" id="tab-earn">
-    <div class="card" style="margin-bottom:16px;" id="dailyBonusCard">
-      <div class="flex-between">
-        <div>
-          <div style="font-weight:700;font-size:15px;">☀️ Daily Login Bonus</div>
-          <div style="font-size:13px;color:var(--text-muted);">Log in every day to earn ₦20</div>
-        </div>
-        <div>
-          <div style="font-family:var(--font-head);font-size:20px;font-weight:800;color:var(--green);">₦20</div>
-          <button class="btn btn-primary btn-sm mt-1" id="claimBonusBtn">Claim</button>
-        </div>
+      <div>
+        <label>Account Number</label>
+        <input type="tel" id="accNumber" placeholder="0123456789" maxlength="10"/>
       </div>
     </div>
-
-    <div class="section-header">
-      <div class="section-title">🎯 Tasks</div>
-      <div class="section-subtitle">Complete tasks to earn Naira</div>
+    <div style="margin-top:.8rem">
+      <label>Account Name</label>
+      <input type="text" id="accName" placeholder="e.g. Chukwuemeka Obi"/>
     </div>
-    <div id="tasksList"></div>
-
-    <!-- AD SLOT — Between Tasks -->
-    <div class="ad-slot">
-      <div class="ad-label">Sponsored Content</div>
-      <ins class="adsbygoogle"
-           style="display:block"
-           data-ad-client="ca-pub-2233572978077170"
-           data-ad-slot="5380127872"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    <div style="margin-top:.8rem">
+      <label>Amount (₦)</label>
+      <input type="number" id="wAmount" placeholder="Min ₦500" min="500"/>
     </div>
-
-    <div class="disclaimer mt-2">⚠️ Earnings are based on activity. Results are not guaranteed.</div>
+    <button class="btn-withdraw" onclick="requestWithdrawal()">Request Withdrawal</button>
+    <p class="min-note">⚠️ Minimum withdrawal: ₦500. Processed within 24 hours.</p>
   </div>
 
-  <!-- ===== TAB: REFERRAL ===== -->
-  <div class="tab-content" id="tab-referral">
-    <div class="ref-progress-card">
-      <div class="flex-between mb-1">
-        <div style="font-weight:700;">Referral Progress</div>
-        <div style="font-size:13px;color:var(--text-muted);"><span id="refCountProgress">0</span>/5 friends</div>
-      </div>
-      <div class="progress-bar"><div class="progress-fill" id="refProgressFill" style="width:0%;"></div></div>
-      <p style="font-size:13px;color:var(--text-muted);margin-top:8px;">🔓 Invite 5 friends to unlock higher earning rates!</p>
-    </div>
-
-    <div class="card" style="margin-bottom:16px;">
-      <div style="font-weight:700;font-size:15px;margin-bottom:8px;">🔗 Your Referral Link</div>
-      <div class="referral-box">
-        <div class="referral-link-text" id="refLinkText">Loading...</div>
-        <button class="btn btn-primary btn-sm" id="copyRefBtn">Copy</button>
-      </div>
-      <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">
-        Earn <strong style="color:var(--green);">₦200</strong> for every friend who signs up with your link!
-      </p>
-    </div>
-
-    <div class="section-header"><div class="section-title">📤 Share Your Link</div></div>
-    <div class="share-grid">
-      <button class="share-btn-whatsapp btn" id="shareWhatsapp">💬 WhatsApp</button>
-      <button class="share-btn-facebook btn" id="shareFacebook">👍 Facebook</button>
-    </div>
-    <div style="margin-top:12px;">
-      <button class="btn btn-outline btn-full" id="shareGeneric">📋 Share via Other Apps</button>
-    </div>
-
-    <div class="card" style="margin-top:16px;background:linear-gradient(135deg,rgba(0,200,83,0.06),rgba(255,214,0,0.04));">
-      <div style="font-size:13px;margin-bottom:8px;font-weight:700;">💡 Referral Tips</div>
-      <ul style="font-size:13px;color:var(--text-muted);padding-left:20px;line-height:1.8;">
-        <li>Post your link on your WhatsApp Status</li>
-        <li>Share in group chats and forums</li>
-        <li>Tell family and friends in your area</li>
-        <li>Post in Facebook groups about making money online</li>
-      </ul>
-    </div>
+  <!-- TRANSACTIONS -->
+  <div class="tx-box">
+    <h3>📋 Recent Transactions</h3>
+    <div id="txList"><div class="empty">Loading transactions…</div></div>
   </div>
 
-  <!-- ===== TAB: LEADERBOARD ===== -->
-  <div class="tab-content" id="tab-leaders">
-    <div class="section-header">
-      <div class="section-title">🏆 Top Earners</div>
-      <div class="section-subtitle">Weekly leaderboard — win bonus cash!</div>
-    </div>
-    <div style="background:rgba(255,214,0,0.08);border:1px solid rgba(255,214,0,0.3);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;margin-bottom:16px;">
-      🥇 Top 3 earners this week win a <strong style="color:var(--gold);">₦1,000 bonus!</strong>
-    </div>
-    <div id="leaderboardList"></div>
-  </div>
-
-  <!-- ===== TAB: HISTORY ===== -->
-  <div class="tab-content" id="tab-history">
-    <div class="section-header"><div class="section-title">📋 Transaction History</div></div>
-    <div id="historyList"></div>
-  </div>
-
-</div><!-- /container -->
-
-<!-- AD SLOT — Dashboard Bottom -->
-<div class="container" style="margin-top:8px;">
-  <div class="ad-slot">
-    <div class="ad-label">Sponsored Content</div>
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-2233572978077170"
-         data-ad-slot="9648547503"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-  </div>
 </div>
 
-<!-- ===== BOTTOM NAV ===== -->
-<nav class="bottom-nav">
-  <div class="bottom-nav-item active" data-tab="earn"><div class="nav-icon">🎯</div>Earn</div>
-  <div class="bottom-nav-item" data-tab="referral"><div class="nav-icon">🔗</div>Refer</div>
-  <div class="bottom-nav-item" data-tab="leaders"><div class="nav-icon">🏆</div>Leaders</div>
-  <div class="bottom-nav-item" data-tab="history"><div class="nav-icon">📋</div>History</div>
-</nav>
+<div class="loader" id="loader">Loading your dashboard…</div>
 
-<script src="script.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+
 <script>
-  const session = JSON.parse(localStorage.getItem('naija_current') || 'null');
-  if (!session) window.location.href = 'login.html';
+  let currentUser = null;
+  let userData = null;
 
-  let users = JSON.parse(localStorage.getItem('naija_users') || '[]');
-  let user = users.find(u => u.id === session.id);
-  if (!user) { localStorage.removeItem('naija_current'); window.location.href = 'login.html'; }
-
-  function saveUsers() { localStorage.setItem('naija_users', JSON.stringify(users)); }
-  function getUser() { return users.find(u => u.id === session.id); }
-
-  function showToast(msg, icon = '🎉') {
-    const tc = document.getElementById('toastContainer');
-    const t = document.createElement('div');
-    t.className = 'toast';
-    t.innerHTML = `<span style="font-size:20px;">${icon}</span><span>${msg}</span>`;
-    tc.appendChild(t);
-    setTimeout(() => t.remove(), 4000);
-  }
-
-  function showEarnModal(amount, title, msg, icon = '🎉') {
-    document.getElementById('earnAmount').textContent = '+₦' + amount;
-    document.getElementById('earnTitle').textContent = title;
-    document.getElementById('earnMsg').textContent = msg;
-    document.getElementById('earnIcon').textContent = icon;
-    document.getElementById('earnModal').classList.add('active');
-  }
-
-  function closeEarnModal() {
-    document.getElementById('earnModal').classList.remove('active');
-    refreshUI();
-  }
-
-  function animateBalance(target) {
-    const el = document.getElementById('walletBalance');
-    const start = parseInt(el.textContent.replace(/[^0-9]/g, '')) || 0;
-    const diff = target - start;
-    const steps = 30; let step = 0;
-    const interval = setInterval(() => {
-      step++;
-      el.textContent = '₦' + Math.round(start + (diff * (step / steps))).toLocaleString();
-      if (step >= steps) clearInterval(interval);
-    }, 20);
-  }
-
-  function refreshUI() {
-    user = getUser();
-    document.getElementById('userName').textContent = user.name.split(' ')[0] + ' 👋';
-    document.getElementById('refCount').textContent = user.referralCount || 0;
-    document.getElementById('tasksDone').textContent = (user.completedTasks || []).length;
-    document.getElementById('statRefs').textContent = user.referralCount || 0;
-    document.getElementById('statTasks').textContent = (user.completedTasks || []).length;
-    animateBalance(user.balance);
-
-    const base = window.location.origin + window.location.pathname.replace('dashboard.html', '');
-    document.getElementById('refLinkText').textContent = base + 'signup.html?ref=' + user.refCode;
-
-    const refs = Math.min(user.referralCount || 0, 5);
-    document.getElementById('refCountProgress').textContent = refs;
-    document.getElementById('refProgressFill').style.width = (refs / 5 * 100) + '%';
-
-    const today = new Date();
-    const lastLogin = user.lastLogin ? new Date(user.lastLogin) : null;
-    const sameDay = lastLogin && lastLogin.getDate() === today.getDate() &&
-      lastLogin.getMonth() === today.getMonth() && lastLogin.getFullYear() === today.getFullYear();
-
-    const claimBtn = document.getElementById('claimBonusBtn');
-    if (user.dailyBonus && sameDay) {
-      claimBtn.textContent = '✅ Claimed'; claimBtn.disabled = true;
-      claimBtn.classList.remove('btn-primary'); claimBtn.classList.add('btn-ghost');
-    }
-    renderTasks(); renderLeaderboard(); renderHistory();
-  }
-
-  const TASKS = [
-    { id:'task_view1', icon:'📺', title:'Watch Sponsored Video #1', desc:'Watch a 30-second sponsored video', reward:50, duration:30 },
-    { id:'task_view2', icon:'📢', title:'View Sponsored Content #2', desc:'Browse sponsored product page', reward:50, duration:15 },
-    { id:'task_view3', icon:'🛍️', title:'View Sponsored Offer #3', desc:"See today's featured offer", reward:50, duration:20 },
-    { id:'task_view4', icon:'📰', title:'Read Sponsored Article', desc:'Read a short sponsored article', reward:50, duration:25 },
-  ];
-
-  function renderTasks() {
-    const list = document.getElementById('tasksList');
-    const done = user.completedTasks || [];
-    list.innerHTML = '';
-    TASKS.forEach(task => {
-      const completed = done.includes(task.id);
-      const div = document.createElement('div');
-      div.className = 'task-card' + (completed ? ' task-completed' : '');
-      div.innerHTML = `
-        <div class="task-icon" style="background:${completed ? 'var(--dark-4)' : 'rgba(0,200,83,0.12)'};">
-          ${completed ? '✅' : task.icon}
-        </div>
-        <div style="flex:1;">
-          <div style="font-weight:700;font-size:14px;">${task.title}</div>
-          <div style="font-size:12px;color:var(--text-muted);">${task.desc}</div>
-        </div>
-        <div style="text-align:right;flex-shrink:0;">
-          <div class="task-reward">₦${task.reward}</div>
-          ${completed
-            ? '<div style="font-size:11px;color:var(--text-muted);">Done</div>'
-            : `<button class="btn btn-primary btn-sm mt-1" onclick="startTask('${task.id}',${task.reward},${task.duration},'${task.title}')">Start</button>`}
-        </div>`;
-      list.appendChild(div);
-    });
-  }
-
-  let taskTimers = {};
-  function startTask(taskId, reward, duration, title) {
-    if (taskTimers[taskId] || (user.completedTasks || []).includes(taskId)) return;
-    showToast('Viewing sponsored content... Please wait', '📺');
-    let remaining = duration;
-    taskTimers[taskId] = setInterval(() => {
-      remaining--;
-      if (remaining <= 0) { clearInterval(taskTimers[taskId]); delete taskTimers[taskId]; completeTask(taskId, reward, title); }
-    }, 1000);
-  }
-
-  function completeTask(taskId, reward, title) {
-    const idx = users.findIndex(u => u.id === session.id);
-    if (!users[idx].completedTasks) users[idx].completedTasks = [];
-    if (users[idx].completedTasks.includes(taskId)) return;
-    users[idx].completedTasks.push(taskId);
-    users[idx].balance += reward;
-    if (!users[idx].history) users[idx].history = [];
-    users[idx].history.unshift({ type:'task', desc:title, amount:reward, date:new Date().toISOString() });
-    saveUsers();
-    showEarnModal(reward, 'Task Complete! 🎯', 'Keep completing tasks to earn more Naira!', '📺');
-  }
-
-  document.getElementById('claimBonusBtn').addEventListener('click', () => {
-    const idx = users.findIndex(u => u.id === session.id);
-    if (users[idx].dailyBonus) { showToast('Already claimed today!', '⚠️'); return; }
-    users[idx].balance += 20; users[idx].dailyBonus = true; users[idx].lastLogin = new Date().toISOString();
-    if (!users[idx].history) users[idx].history = [];
-    users[idx].history.unshift({ type:'bonus', desc:'Daily Login Bonus', amount:20, date:new Date().toISOString() });
-    saveUsers();
-    showEarnModal(20, 'Daily Bonus! ☀️', 'Come back tomorrow for another ₦20!', '☀️');
-  });
-
-  const FAKE_LEADERS = [
-    { name:'Chisom A.', refs:42, balance:9840, city:'Lagos' },
-    { name:'Emmanuel O.', refs:38, balance:8800, city:'Abuja' },
-    { name:'Fatimah B.', refs:31, balance:7350, city:'Kano' },
-    { name:'Tunde S.', refs:27, balance:6250, city:'Ibadan' },
-    { name:'Ngozi I.', refs:22, balance:5140, city:'Enugu' },
-    { name:'Seun K.', refs:18, balance:4320, city:'Port Harcourt' },
-    { name:'Blessing M.', refs:15, balance:3650, city:'Benin City' },
-    { name:'Emeka C.', refs:11, balance:2870, city:'Owerri' },
-    { name:'Aisha H.', refs:9, balance:2250, city:'Kaduna' },
-    { name:'Uche N.', refs:7, balance:1740, city:'Jos' },
-  ];
-
-  function renderLeaderboard() {
-    const allLeaders = [...FAKE_LEADERS, { name:user.name.split(' ')[0]+' (You)', refs:user.referralCount||0, balance:user.balance, city:'Your City', isYou:true }];
-    allLeaders.sort((a,b) => b.balance - a.balance);
-    document.getElementById('leaderboardList').innerHTML = allLeaders.slice(0,10).map((leader,i) => {
-      const rc = i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other';
-      const ri = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
-      return `<div class="leaderboard-item ${leader.isYou?'lb-you':''}">
-        <div class="leaderboard-rank ${rc}">${ri}</div>
-        <div style="flex:1;">
-          <div style="font-weight:700;font-size:14px;">${leader.name}${leader.isYou?' 🌟':''}</div>
-          <div style="font-size:12px;color:var(--text-muted);">📍 ${leader.city} · ${leader.refs} referrals</div>
-        </div>
-        <div style="font-family:var(--font-head);font-weight:800;color:var(--green);">₦${leader.balance.toLocaleString()}</div>
-      </div>`;
-    }).join('');
-  }
-
-  function renderHistory() {
-    const history = user.history || [];
-    const list = document.getElementById('historyList');
-    if (!history.length) {
-      list.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:32px;font-size:14px;">No transactions yet. Complete tasks and invite friends to start earning!</div>';
+  auth.onAuthStateChanged(async user => {
+    if (!user) {
+      window.location.href = "login.html";
       return;
     }
-    list.innerHTML = history.map(h => `
-      <div style="display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--border);">
-        <div style="width:36px;height:36px;border-radius:10px;background:rgba(0,200,83,0.1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">
-          ${h.type==='referral'?'👥':h.type==='task'?'📺':h.type==='bonus'?'☀️':h.type==='withdrawal'?'💳':'💰'}
-        </div>
-        <div style="flex:1;">
-          <div style="font-weight:600;font-size:14px;">${h.desc}</div>
-          <div style="font-size:12px;color:var(--text-muted);">${new Date(h.date).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'})}</div>
-        </div>
-        <div style="font-family:var(--font-head);font-weight:800;color:${h.amount>0?'var(--green)':'var(--danger)'};">
-          ${h.amount>0?'+':''}₦${Math.abs(h.amount).toLocaleString()}
-        </div>
-      </div>`).join('');
+    currentUser = user;
+    await loadDashboard(user.uid);
+  });
+
+  async function loadDashboard(uid) {
+    try {
+      const doc = await db.collection("users").doc(uid).get();
+      if (!doc.exists) { auth.signOut(); return; }
+      userData = doc.data();
+
+      // Populate UI
+      document.getElementById("userBadge").textContent = "@" + userData.username;
+      document.getElementById("firstName").textContent = userData.fullname.split(" ")[0];
+      document.getElementById("balance").textContent = "₦" + (userData.balance || 0).toLocaleString();
+      document.getElementById("totalEarned").textContent = "₦" + (userData.totalEarned || 0).toLocaleString();
+      document.getElementById("refCount").textContent = userData.referralCount || 0;
+      document.getElementById("pending").textContent = "₦" + (userData.pendingWithdrawal || 0).toLocaleString();
+
+      const refUrl = `${window.location.origin}/register.html?ref=${userData.username}`;
+      document.getElementById("refLink").value = refUrl;
+
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("mainContent").style.display = "block";
+
+      loadTransactions(uid);
+    } catch (e) {
+      document.getElementById("loader").textContent = "Error loading dashboard. Please refresh.";
+    }
   }
 
-  // Referral share
-  function getRefLink() {
-    return window.location.origin + window.location.pathname.replace('dashboard.html','') + 'signup.html?ref=' + user.refCode;
+  function loadTransactions(uid) {
+    db.collection("transactions")
+      .where("uid", "==", uid)
+      .orderBy("createdAt", "desc")
+      .limit(10)
+      .get()
+      .then(snap => {
+        const list = document.getElementById("txList");
+        if (snap.empty) {
+          list.innerHTML = '<div class="empty">No transactions yet. Start referring to earn!</div>';
+          return;
+        }
+        list.innerHTML = "";
+        snap.forEach(doc => {
+          const d = doc.data();
+          const date = d.createdAt ? d.createdAt.toDate().toLocaleDateString("en-NG", { day:"numeric", month:"short", year:"numeric" }) : "Just now";
+          const isCredit = d.type !== "withdrawal";
+          const cls = d.status === "pending" ? "pending" : (isCredit ? "credit" : "debit");
+          const sign = isCredit ? "+" : "-";
+          list.innerHTML += `
+            <div class="tx-item">
+              <div>
+                <div class="tx-desc">${d.description || d.type}</div>
+                <div class="tx-date">${date} ${d.status === "pending" ? "· Pending" : ""}</div>
+              </div>
+              <div class="tx-amount ${cls}">${sign}₦${d.amount.toLocaleString()}</div>
+            </div>`;
+        });
+      });
   }
-  document.getElementById('copyRefBtn').addEventListener('click', () => {
-    const link = getRefLink();
-    navigator.clipboard.writeText(link).then(() => showToast('Referral link copied!','📋')).catch(() => {
-      const ta = document.createElement('textarea'); ta.value = link;
-      document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
-      showToast('Link copied!','📋');
+
+  function copyLink() {
+    const link = document.getElementById("refLink").value;
+    navigator.clipboard.writeText(link).then(() => {
+      const btn = document.querySelector(".copy-btn");
+      btn.textContent = "Copied!";
+      setTimeout(() => btn.textContent = "Copy", 2000);
     });
-  });
-  document.getElementById('shareWhatsapp').addEventListener('click', () => {
-    const msg = `💰 I'm earning real cash on NaijaEarn Hub! Join me and get ₦200 signup bonus!\n\n🔗 ${getRefLink()}\n\n#NaijaEarnHub #EarnOnline #Nigeria`;
-    window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
-  });
-  document.getElementById('shareFacebook').addEventListener('click', () => {
-    window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(getRefLink()),'_blank');
-  });
-  document.getElementById('shareGeneric').addEventListener('click', () => {
-    const link = getRefLink();
-    if (navigator.share) { navigator.share({title:'NaijaEarn Hub',text:'Join me and earn ₦200 signup bonus!',url:link}); }
-    else { navigator.clipboard.writeText(link).then(() => showToast('Link copied!','📋')); }
-  });
-
-  // Withdrawal
-  function openWithdraw() {
-    if (user.balance < 2000) { showToast('Minimum withdrawal is ₦2,000. Keep earning!','⚠️'); return; }
-    document.getElementById('withdrawModal').classList.add('active');
   }
-  document.getElementById('submitWithdraw').addEventListener('click', () => {
-    const errEl = document.getElementById('withdrawError');
-    errEl.style.display = 'none';
-    const bank = document.getElementById('bankName').value;
-    const acctNum = document.getElementById('accountNum').value.trim();
-    const acctName = document.getElementById('accountName').value.trim();
-    const amount = parseInt(document.getElementById('withdrawAmount').value);
-    if (!bank||!acctNum||!acctName||!amount) { errEl.textContent='Please fill in all fields.';errEl.style.display='block';return; }
-    if (acctNum.length!==10) { errEl.textContent='Account number must be 10 digits.';errEl.style.display='block';return; }
-    if (amount<2000) { errEl.textContent='Minimum withdrawal is ₦2,000.';errEl.style.display='block';return; }
-    if (amount>user.balance) { errEl.textContent='Amount exceeds your balance.';errEl.style.display='block';return; }
 
-    const idx = users.findIndex(u => u.id === session.id);
-    users[idx].balance -= amount;
-    if (!users[idx].withdrawals) users[idx].withdrawals = [];
-    users[idx].withdrawals.push({ id:Date.now().toString(), bank, accountNumber:acctNum, accountName:acctName, amount, status:'pending', requestedAt:new Date().toISOString() });
-    if (!users[idx].history) users[idx].history = [];
-    users[idx].history.unshift({ type:'withdrawal', desc:`Withdrawal to ${bank}`, amount:-amount, date:new Date().toISOString() });
-    saveUsers();
-    document.getElementById('withdrawModal').classList.remove('active');
-    showToast('Withdrawal request submitted! Processing in 24-48 hrs.','💳');
-    refreshUI();
-  });
+  function shareWhatsApp() {
+    const link = document.getElementById("refLink").value;
+    const msg = encodeURIComponent(`Join NaijaEarn and start making money today! Use my link: ${link}`);
+    window.open(`https://wa.me/?text=${msg}`, "_blank");
+  }
+  function shareTelegram() {
+    const link = encodeURIComponent(document.getElementById("refLink").value);
+    window.open(`https://t.me/share/url?url=${link}&text=Join+NaijaEarn+and+earn+money!`, "_blank");
+  }
+  function shareFacebook() {
+    const link = encodeURIComponent(document.getElementById("refLink").value);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${link}`, "_blank");
+  }
+  function shareTwitter() {
+    const link = encodeURIComponent(document.getElementById("refLink").value);
+    window.open(`https://twitter.com/intent/tweet?text=Join+NaijaEarn+and+earn+real+money!&url=${link}`, "_blank");
+  }
 
-  // Tabs
-  document.querySelectorAll('.dash-tab, .bottom-nav-item').forEach(el => {
-    el.addEventListener('click', () => {
-      const tab = el.dataset.tab;
-      document.querySelectorAll('.dash-tab').forEach(t => t.classList.toggle('active', t.dataset.tab===tab));
-      document.querySelectorAll('.bottom-nav-item').forEach(t => t.classList.toggle('active', t.dataset.tab===tab));
-      document.querySelectorAll('.tab-content').forEach(tc => tc.classList.toggle('active', tc.id==='tab-'+tab));
-    });
-  });
+  async function requestWithdrawal() {
+    const bank = document.getElementById("bankName").value;
+    const acc = document.getElementById("accNumber").value.trim();
+    const name = document.getElementById("accName").value.trim();
+    const amount = parseInt(document.getElementById("wAmount").value);
+    const alertEl = document.getElementById("wAlert");
 
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    localStorage.removeItem('naija_current');
-    window.location.href = 'login.html';
-  });
+    function showAlert(msg, type) {
+      alertEl.textContent = msg;
+      alertEl.className = "alert " + type;
+      alertEl.style.display = "block";
+    }
 
-  refreshUI();
+    if (!bank || !acc || !name || !amount) return showAlert("Please fill in all fields.", "error");
+    if (acc.length !== 10) return showAlert("Account number must be 10 digits.", "error");
+    if (amount < 500) return showAlert("Minimum withdrawal is ₦500.", "error");
+    if (amount > (userData.balance || 0)) return showAlert("Insufficient balance.", "error");
 
-  const fakeNames = ['Chidi','Amaka','Tunde','Ngozi','Emeka','Fatima','Seun','Blessing','Uche','Aisha'];
-  setInterval(() => {
-    const name = fakeNames[Math.floor(Math.random()*fakeNames.length)];
-    const amt = [50,200][Math.floor(Math.random()*2)];
-    showToast(`${name} just earned ₦${amt}! 🎉`,'💸');
-  }, 12000);
+    const btn = document.querySelector(".btn-withdraw");
+    btn.disabled = true;
+    btn.textContent = "Processing…";
+
+    try {
+      const batch = db.batch();
+      const userRef = db.collection("users").doc(currentUser.uid);
+      const txRef = db.collection("transactions").doc();
+      const wRef = db.collection("withdrawals").doc();
+
+      batch.update(userRef, {
+        balance: firebase.firestore.FieldValue.increment(-amount),
+        pendingWithdrawal: firebase.firestore.FieldValue.increment(amount)
+      });
+      batch.set(txRef, {
+        uid: currentUser.uid,
+        type: "withdrawal",
+        amount,
+        description: `Withdrawal to ${bank} (${acc})`,
+        status: "pending",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      batch.set(wRef, {
+        uid: currentUser.uid,
+        username: userData.username,
+        fullname: userData.fullname,
+        phone: userData.phone,
+        bank, acc, name, amount,
+        status: "pending",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      await batch.commit();
+      userData.balance -= amount;
+      document.getElementById("balance").textContent = "₦" + userData.balance.toLocaleString();
+      showAlert("Withdrawal request submitted! You'll be paid within 24 hours. ✅", "success");
+      loadTransactions(currentUser.uid);
+    } catch (e) {
+      showAlert("Error: " + e.message, "error");
+    }
+
+    btn.disabled = false;
+    btn.textContent = "Request Withdrawal";
+  }
+
+  function logout() {
+    auth.signOut().then(() => window.location.href = "login.html");
+  }
 </script>
 </body>
 </html>
