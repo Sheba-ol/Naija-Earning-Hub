@@ -6,69 +6,63 @@
   <title>Dashboard – NaijaEarn</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
-    :root { --green:#00c853; --gold:#ffca28; --dark:#0a0a0a; --card:#141414; --border:#222; --text:#f0f0f0; --muted:#888; --red:#ff5252; }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { background:var(--dark); color:var(--text); font-family:'DM Sans',sans-serif; }
-    /* NAV */
-    nav { display:flex; justify-content:space-between; align-items:center; padding:1rem 1.5rem; border-bottom:1px solid var(--border); position:sticky; top:0; background:rgba(10,10,10,0.96); backdrop-filter:blur(10px); z-index:100; }
-    .logo { font-family:'Syne',sans-serif; font-weight:800; font-size:1.3rem; text-decoration:none; color:var(--text); }
-    .logo span { color:var(--green); }
-    .nav-right { display:flex; align-items:center; gap:1rem; }
-    .user-badge { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:.4rem .9rem; font-size:.85rem; }
-    .btn-logout { background:transparent; border:1px solid var(--border); color:var(--muted); padding:.4rem .9rem; border-radius:8px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:.82rem; transition:all .2s; }
-    .btn-logout:hover { border-color:var(--red); color:var(--red); }
-    /* LAYOUT */
-    .wrapper { max-width:900px; margin:0 auto; padding:2rem 1.2rem; }
-    /* GREETING */
-    .greeting { margin-bottom:2rem; }
-    .greeting h1 { font-family:'Syne',sans-serif; font-size:1.7rem; font-weight:800; }
-    .greeting p { color:var(--muted); font-size:.9rem; margin-top:.3rem; }
-    /* STAT CARDS */
-    .stats { display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:1rem; margin-bottom:2rem; }
-    .stat-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.4rem 1.2rem; }
-    .stat-card .label { font-size:.78rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:.5rem; }
-    .stat-card .value { font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; }
-    .stat-card.green .value { color:var(--green); }
-    .stat-card.gold .value { color:var(--gold); }
-    /* REFERRAL BOX */
-    .referral-box { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:1.5rem; margin-bottom:2rem; }
-    .referral-box h3 { font-family:'Syne',sans-serif; font-size:1.1rem; margin-bottom:1rem; }
-    .link-row { display:flex; gap:.6rem; }
-    .link-input { flex:1; background:#1a1a1a; border:1px solid var(--border); border-radius:8px; padding:.7rem 1rem; color:var(--text); font-size:.85rem; outline:none; }
-    .copy-btn { background:var(--green); color:#000; border:none; border-radius:8px; padding:.7rem 1.2rem; font-weight:700; cursor:pointer; font-family:'Syne',sans-serif; font-size:.85rem; transition:background .2s; white-space:nowrap; }
-    .copy-btn:hover { background:#00e060; }
-    .share-row { display:flex; gap:.6rem; flex-wrap:wrap; margin-top:.8rem; }
-    .share-btn { flex:1; min-width:100px; padding:.55rem .8rem; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--text); font-size:.82rem; cursor:pointer; transition:all .2s; font-family:'DM Sans',sans-serif; }
-    .share-btn:hover { border-color:var(--green); color:var(--green); }
-    /* WITHDRAW */
-    .withdraw-box { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:1.5rem; margin-bottom:2rem; }
-    .withdraw-box h3 { font-family:'Syne',sans-serif; font-size:1.1rem; margin-bottom:1rem; }
-    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:.8rem; }
-    label { display:block; font-size:.82rem; color:var(--muted); margin-bottom:.35rem; }
-    input, select { width:100%; background:#1a1a1a; border:1px solid var(--border); border-radius:8px; padding:.7rem 1rem; color:var(--text); font-family:'DM Sans',sans-serif; font-size:.9rem; outline:none; transition:border-color .2s; }
-    input:focus, select:focus { border-color:var(--green); }
-    select option { background:#1a1a1a; }
-    .btn-withdraw { width:100%; margin-top:1rem; padding:.85rem; background:var(--gold); color:#000; font-family:'Syne',sans-serif; font-weight:700; font-size:.95rem; border:none; border-radius:10px; cursor:pointer; transition:all .2s; }
-    .btn-withdraw:hover { background:#ffd740; transform:translateY(-1px); }
-    .btn-withdraw:disabled { opacity:.5; cursor:not-allowed; transform:none; }
-    .min-note { font-size:.78rem; color:var(--muted); margin-top:.5rem; }
-    /* TRANSACTIONS */
-    .tx-box { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:1.5rem; }
-    .tx-box h3 { font-family:'Syne',sans-serif; font-size:1.1rem; margin-bottom:1rem; }
-    .tx-item { display:flex; justify-content:space-between; align-items:center; padding:.85rem 0; border-bottom:1px solid var(--border); }
-    .tx-item:last-child { border-bottom:none; }
-    .tx-desc { font-size:.88rem; }
-    .tx-date { font-size:.75rem; color:var(--muted); margin-top:.2rem; }
-    .tx-amount { font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; }
-    .tx-amount.credit { color:var(--green); }
-    .tx-amount.debit { color:var(--red); }
-    .tx-amount.pending { color:var(--gold); }
-    .empty { text-align:center; color:var(--muted); padding:2rem; font-size:.9rem; }
-    /* ALERT */
-    .alert { padding:.75rem 1rem; border-radius:8px; font-size:.85rem; margin-bottom:1rem; display:none; }
-    .alert.success { background:rgba(0,200,83,0.15); color:var(--green); border:1px solid rgba(0,200,83,0.3); }
-    .alert.error { background:rgba(255,82,82,0.12); color:var(--red); border:1px solid rgba(255,82,82,0.25); }
-    .loader { text-align:center; color:var(--muted); padding:3rem; }
+    :root {
+      --green:#00c853; --gold:#ffca28; --dark:#0a0a0a; --card:#141414; 
+      --border:#222; --text:#f0f0f0; --muted:#888; --red:#ff5252;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;}
+    nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.5rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,10,0.96);backdrop-filter:blur(10px);z-index:100;}
+    .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;text-decoration:none;color:var(--text);}
+    .logo span{color:var(--green);}
+    .nav-right{display:flex;align-items:center;gap:1rem;}
+    .user-badge{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.4rem .9rem;font-size:.85rem;}
+    .btn-logout{background:transparent;border:1px solid var(--border);color:var(--muted);padding:.4rem .9rem;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.82rem;transition:all .2s;}
+    .btn-logout:hover{border-color:var(--red);color:var(--red);}
+    .wrapper{max-width:900px;margin:0 auto;padding:2rem 1.2rem;opacity:0;transition:opacity .4s;}
+    .wrapper.show{opacity:1;}
+    .greeting{margin-bottom:2rem;}
+    .greeting h1{font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;}
+    .greeting p{color:var(--muted);font-size:.9rem;margin-top:.3rem;}
+    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:2rem;}
+    .stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem 1.2rem;}
+    .stat-card .label{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;}
+    .stat-card .value{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;}
+    .stat-card.green .value{color:var(--green);}
+    .stat-card.gold .value{color:var(--gold);}
+    .referral-box, .withdraw-box, .tx-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:2rem;}
+    .referral-box h3, .withdraw-box h3, .tx-box h3{font-family:'Syne',sans-serif;font-size:1.1rem;margin-bottom:1rem;}
+    .link-row{display:flex;gap:.6rem;}
+    .link-input{flex:1;background:#1a1a1a;border:1px solid var(--border);border-radius:8px;padding:.7rem 1rem;color:var(--text);font-size:.85rem;outline:none;}
+    .copy-btn{background:var(--green);color:#000;border:none;border-radius:8px;padding:.7rem 1.2rem;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:.85rem;transition:background .2s;white-space:nowrap;}
+    .copy-btn:hover{background:#00e060;}
+    .share-row{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.8rem;}
+    .share-btn{flex:1;min-width:100px;padding:.55rem .8rem;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:.82rem;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+    .share-btn:hover{border-color:var(--green);color:var(--green);}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
+    label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:.35rem;}
+    input, select{width:100%;background:#1a1a1a;border:1px solid var(--border);border-radius:8px;padding:.7rem 1rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s;}
+    input:focus, select:focus{border-color:var(--green);}
+    select option{background:#1a1a1a;}
+    .btn-withdraw{width:100%;margin-top:1rem;padding:.85rem;background:var(--gold);color:#000;font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;border:none;border-radius:10px;cursor:pointer;transition:all .2s;}
+    .btn-withdraw:hover{background:#ffd740;transform:translateY(-1px);}
+    .btn-withdraw:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+    .min-note{font-size:.78rem;color:var(--muted);margin-top:.5rem;}
+    .tx-item{display:flex;justify-content:space-between;align-items:center;padding:.85rem 0;border-bottom:1px solid var(--border);}
+    .tx-item:last-child{border-bottom:none;}
+    .tx-desc{font-size:.88rem;}
+    .tx-date{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
+    .tx-amount{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;}
+    .tx-amount.credit{color:var(--green);}
+    .tx-amount.debit{color:var(--red);}
+    .tx-amount.pending{color:var(--gold);}
+    .empty{text-align:center;color:var(--muted);padding:2rem;font-size:.9rem;}
+    .alert{padding:.75rem 1rem;border-radius:8px;font-size:.85rem;margin-bottom:1rem;display:none;opacity:0;transition:opacity .3s;}
+    .alert.show{opacity:1;}
+    .alert.success{background:rgba(0,200,83,0.15);color:var(--green);border:1px solid rgba(0,200,83,0.3);}
+    .alert.error{background:rgba(255,82,82,0.12);color:var(--red);border:1px solid rgba(255,82,82,0.25);}
+    .loader{text-align:center;color:var(--muted);padding:3rem;}
+    @media(max-width:480px){.form-row{grid-template-columns:1fr;}.stats{grid-template-columns:1fr 1fr;}}
   </style>
 </head>
 <body>
@@ -81,7 +75,7 @@
   </div>
 </nav>
 
-<div class="wrapper" id="mainContent" style="display:none">
+<div class="wrapper" id="mainContent">
 
   <div class="greeting">
     <h1>Welcome back, <span id="firstName">—</span> 👋</h1>
@@ -180,168 +174,97 @@
 <script src="firebase-config.js"></script>
 
 <script>
-  let currentUser = null;
-  let userData = null;
+let currentUser=null,userData=null;
 
-  auth.onAuthStateChanged(async user => {
-    if (!user) {
-      window.location.href = "login.html";
-      return;
-    }
-    currentUser = user;
-    await loadDashboard(user.uid);
-  });
+auth.onAuthStateChanged(user=>{
+  if(!user){ window.location.href="login.html"; return; }
+  currentUser=user;
+  loadDashboard(user.uid);
+});
 
-  async function loadDashboard(uid) {
-    try {
-      const doc = await db.collection("users").doc(uid).get();
-      if (!doc.exists) { auth.signOut(); return; }
-      userData = doc.data();
+function showAlert(el,msg,type){
+  el.textContent=msg;
+  el.className="alert "+type+" show";
+  setTimeout(()=>el.classList.remove("show"),4000);
+}
 
-      // Populate UI
-      document.getElementById("userBadge").textContent = "@" + userData.username;
-      document.getElementById("firstName").textContent = userData.fullname.split(" ")[0];
-      document.getElementById("balance").textContent = "₦" + (userData.balance || 0).toLocaleString();
-      document.getElementById("totalEarned").textContent = "₦" + (userData.totalEarned || 0).toLocaleString();
-      document.getElementById("refCount").textContent = userData.referralCount || 0;
-      document.getElementById("pending").textContent = "₦" + (userData.pendingWithdrawal || 0).toLocaleString();
+async function loadDashboard(uid){
+  try{
+    const doc=await db.collection("users").doc(uid).get();
+    if(!doc.exists){ auth.signOut(); return; }
+    userData=doc.data();
 
-      const refUrl = `${window.location.origin}/register.html?ref=${userData.username}`;
-      document.getElementById("refLink").value = refUrl;
+    document.getElementById("userBadge").textContent="@"+userData.username;
+    document.getElementById("firstName").textContent=userData.fullname.split(" ")[0];
+    document.getElementById("balance").textContent="₦"+(userData.balance||0).toLocaleString();
+    document.getElementById("totalEarned").textContent="₦"+(userData.totalEarned||0).toLocaleString();
+    document.getElementById("refCount").textContent=userData.referralCount||0;
+    document.getElementById("pending").textContent="₦"+(userData.pendingWithdrawal||0).toLocaleString();
 
-      document.getElementById("loader").style.display = "none";
-      document.getElementById("mainContent").style.display = "block";
+    const refUrl=`${window.location.origin}/register.html?ref=${encodeURIComponent(userData.username)}`;
+    document.getElementById("refLink").value=refUrl;
 
-      loadTransactions(uid);
-    } catch (e) {
-      document.getElementById("loader").textContent = "Error loading dashboard. Please refresh.";
-    }
-  }
+    document.getElementById("loader").style.display="none";
+    document.getElementById("mainContent").classList.add("show");
 
-  function loadTransactions(uid) {
+    // Real-time transactions listener
     db.collection("transactions")
-      .where("uid", "==", uid)
-      .orderBy("createdAt", "desc")
+      .where("uid","==",uid)
+      .orderBy("createdAt","desc")
       .limit(10)
-      .get()
-      .then(snap => {
-        const list = document.getElementById("txList");
-        if (snap.empty) {
-          list.innerHTML = '<div class="empty">No transactions yet. Start referring to earn!</div>';
-          return;
-        }
-        list.innerHTML = "";
-        snap.forEach(doc => {
-          const d = doc.data();
-          const date = d.createdAt ? d.createdAt.toDate().toLocaleDateString("en-NG", { day:"numeric", month:"short", year:"numeric" }) : "Just now";
-          const isCredit = d.type !== "withdrawal";
-          const cls = d.status === "pending" ? "pending" : (isCredit ? "credit" : "debit");
-          const sign = isCredit ? "+" : "-";
-          list.innerHTML += `
+      .onSnapshot(snap=>{
+        const list=document.getElementById("txList");
+        if(snap.empty){ list.innerHTML='<div class="empty">No transactions yet. Start referring to earn!</div>'; return; }
+        list.innerHTML="";
+        snap.forEach(doc=>{
+          const d=doc.data();
+          const date=d.createdAt ? d.createdAt.toDate().toLocaleDateString("en-NG",{day:"numeric",month:"short",year:"numeric"}) : "Just now";
+          const isCredit=d.type!=="withdrawal";
+          const cls=d.status==="pending"?"pending":(isCredit?"credit":"debit");
+          const sign=isCredit?"+":"-";
+          list.innerHTML+=`
             <div class="tx-item">
               <div>
-                <div class="tx-desc">${d.description || d.type}</div>
-                <div class="tx-date">${date} ${d.status === "pending" ? "· Pending" : ""}</div>
+                <div class="tx-desc">${d.description||d.type}</div>
+                <div class="tx-date">${date} ${d.status==="pending"?"· Pending":""}</div>
               </div>
               <div class="tx-amount ${cls}">${sign}₦${d.amount.toLocaleString()}</div>
             </div>`;
         });
       });
-  }
 
-  function copyLink() {
-    const link = document.getElementById("refLink").value;
-    navigator.clipboard.writeText(link).then(() => {
-      const btn = document.querySelector(".copy-btn");
-      btn.textContent = "Copied!";
-      setTimeout(() => btn.textContent = "Copy", 2000);
-    });
-  }
+  }catch(e){ document.getElementById("loader").textContent="Error loading dashboard. Please refresh."; }
+}
 
-  function shareWhatsApp() {
-    const link = document.getElementById("refLink").value;
-    const msg = encodeURIComponent(`Join NaijaEarn and start making money today! Use my link: ${link}`);
-    window.open(`https://wa.me/?text=${msg}`, "_blank");
-  }
-  function shareTelegram() {
-    const link = encodeURIComponent(document.getElementById("refLink").value);
-    window.open(`https://t.me/share/url?url=${link}&text=Join+NaijaEarn+and+earn+money!`, "_blank");
-  }
-  function shareFacebook() {
-    const link = encodeURIComponent(document.getElementById("refLink").value);
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${link}`, "_blank");
-  }
-  function shareTwitter() {
-    const link = encodeURIComponent(document.getElementById("refLink").value);
-    window.open(`https://twitter.com/intent/tweet?text=Join+NaijaEarn+and+earn+real+money!&url=${link}`, "_blank");
-  }
+// Referral
+function copyLink(){ const link=document.getElementById("refLink").value; navigator.clipboard.writeText(link).then(()=>{const btn=document.querySelector(".copy-btn"); btn.textContent="Copied!"; setTimeout(()=>btn.textContent="Copy",2000);}); }
+function shareWhatsApp(){ const link=document.getElementById("refLink").value; const msg=encodeURIComponent(`Join NaijaEarn and start making money today! Use my link: ${link}`); window.open(`https://wa.me/?text=${msg}`,"_blank"); }
+function shareTelegram(){ const link=encodeURIComponent(document.getElementById("refLink").value); window.open(`https://t.me/share/url?url=${link}&text=Join+NaijaEarn+and+earn+money!`,"_blank"); }
+function shareFacebook(){ const link=encodeURIComponent(document.getElementById("refLink").value); window.open(`https://www.facebook.com/sharer/sharer.php?u=${link}`,"_blank"); }
+function shareTwitter(){ const link=encodeURIComponent(document.getElementById("refLink").value); window.open(`https://twitter.com/intent/tweet?text=Join+NaijaEarn+and+earn+real+money!&url=${link}`,"_blank"); }
 
-  async function requestWithdrawal() {
-    const bank = document.getElementById("bankName").value;
-    const acc = document.getElementById("accNumber").value.trim();
-    const name = document.getElementById("accName").value.trim();
-    const amount = parseInt(document.getElementById("wAmount").value);
-    const alertEl = document.getElementById("wAlert");
+// Withdrawal
+async function requestWithdrawal(){
+  const bank=document.getElementById("bankName").value;
+  const acc=document.getElementById("accNumber").value.trim();
+  const name=document.getElementById("accName").value.trim();
+  const amount=parseInt(document.getElementById("wAmount").value);
+  const alertEl=document.getElementById("wAlert");
 
-    function showAlert(msg, type) {
-      alertEl.textContent = msg;
-      alertEl.className = "alert " + type;
-      alertEl.style.display = "block";
-    }
+  if(!bank||!acc||!name||!amount)return showAlert(alertEl,"Please fill in all fields.","error");
+  if(acc.length!==10)return showAlert(alertEl,"Account number must be 10 digits.","error");
+  if(amount<500)return showAlert(alertEl,"Minimum withdrawal is ₦500.","error");
+  if(amount>(userData.balance||0))return showAlert(alertEl,"Insufficient balance.","error");
 
-    if (!bank || !acc || !name || !amount) return showAlert("Please fill in all fields.", "error");
-    if (acc.length !== 10) return showAlert("Account number must be 10 digits.", "error");
-    if (amount < 500) return showAlert("Minimum withdrawal is ₦500.", "error");
-    if (amount > (userData.balance || 0)) return showAlert("Insufficient balance.", "error");
+  const btn=document.querySelector(".btn-withdraw");
+  btn.disabled=true; btn.textContent="Processing…";
 
-    const btn = document.querySelector(".btn-withdraw");
-    btn.disabled = true;
-    btn.textContent = "Processing…";
+  try{
+    const batch=db.batch();
+    const userRef=db.collection("users").doc(currentUser.uid);
+    const txRef=db.collection("transactions").doc();
+    const wRef=db.collection("withdrawals").doc();
 
-    try {
-      const batch = db.batch();
-      const userRef = db.collection("users").doc(currentUser.uid);
-      const txRef = db.collection("transactions").doc();
-      const wRef = db.collection("withdrawals").doc();
-
-      batch.update(userRef, {
-        balance: firebase.firestore.FieldValue.increment(-amount),
-        pendingWithdrawal: firebase.firestore.FieldValue.increment(amount)
-      });
-      batch.set(txRef, {
-        uid: currentUser.uid,
-        type: "withdrawal",
-        amount,
-        description: `Withdrawal to ${bank} (${acc})`,
-        status: "pending",
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      batch.set(wRef, {
-        uid: currentUser.uid,
-        username: userData.username,
-        fullname: userData.fullname,
-        phone: userData.phone,
-        bank, acc, name, amount,
-        status: "pending",
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-
-      await batch.commit();
-      userData.balance -= amount;
-      document.getElementById("balance").textContent = "₦" + userData.balance.toLocaleString();
-      showAlert("Withdrawal request submitted! You'll be paid within 24 hours. ✅", "success");
-      loadTransactions(currentUser.uid);
-    } catch (e) {
-      showAlert("Error: " + e.message, "error");
-    }
-
-    btn.disabled = false;
-    btn.textContent = "Request Withdrawal";
-  }
-
-  function logout() {
-    auth.signOut().then(() => window.location.href = "login.html");
-  }
-</script>
-</body>
-</html>
+    batch.update(userRef,{balance:firebase.firestore.FieldValue.increment(-amount),pendingWithdrawal:firebase.firestore.FieldValue.increment(amount)});
+    batch.set(txRef,{uid:currentUser.uid,type:"withdrawal",amount,description:`Withdrawal to ${bank} (${acc})`,status:"pending",createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    batch.set(wRef,{uid:currentUser.uid,username:userData.username,fullname:userData.fullname,phone:userData
